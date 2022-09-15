@@ -6,3 +6,16 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+panic-halt = "0.2.0"
+hx711_spi = "0.4.0"
+
+[dependencies.arduino-hal]
+git = "https://github.com/Rahix/avr-hal"
+features = ["arduino-uno"]
+
+
+[build]
+target = "avr-atmega328.json"
+
+[unstable]
+build-std = ["core"]
