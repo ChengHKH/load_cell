@@ -7,6 +7,9 @@ edition = "2021"
 
 [dependencies]
 panic-halt = "0.2.0"
+embedded-hal = "0.2.7"
+nb = "1.0.0"
+ufmt = "0.2.0"
 
 [dependencies.arduino-hal]
 git = "https://github.com/Rahix/avr-hal"
