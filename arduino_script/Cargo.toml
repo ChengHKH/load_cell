@@ -15,13 +15,3 @@ hx711_spi = "0.4.0"
 [dependencies.arduino-hal]
 git = "https://github.com/Rahix/avr-hal"
 features = ["arduino-uno"]
-
-[profile.dev]
-panic = "abort"
-lto = true
-opt-level = "s"
-
-[profile.release]
-panic = "abort"
-lto = true
-opt-level = "s"

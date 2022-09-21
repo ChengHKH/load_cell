@@ -6,7 +6,6 @@ use arduino_hal::prelude::*;
 use arduino_hal::{spi, Delay};
 use hx711_spi::Hx711;
 use nb;
-use ufmt;
 
 #[arduino_hal::entry]
 fn main() -> ! {
