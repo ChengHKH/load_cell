@@ -17,6 +17,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "arduino_script"
+version = "0.1.0"
+dependencies = [
+ "arduino-hal",
+ "embedded-hal",
+ "hx711_spi",
+ "nb 1.0.0",
+ "panic-halt",
+ "ufmt 0.2.0",
+]
+
+[[package]]
 name = "atmega-hal"
 version = "0.1.0"
 source = "git+https://github.com/Rahix/avr-hal#4cbb163deddac1651ce3374c8d91dbe7b7bb63ff"
@@ -141,18 +153,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "284f18f85651fe11e8a991b2adb42cb078325c996ed026d994719efcfca1d54b"
 dependencies = [
  "either",
-]
-
-[[package]]
-name = "load_cell"
-version = "0.1.0"
-dependencies = [
- "arduino-hal",
- "embedded-hal",
- "hx711_spi",
- "nb 1.0.0",
- "panic-halt",
- "ufmt 0.2.0",
 ]
 
 [[package]]
