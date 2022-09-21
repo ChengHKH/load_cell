@@ -74,6 +74,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "bitmatch"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6a53e105d41966c9b4594b8e3b7cf8e81ae63cc83664880b049af8a11381a3ad"
+dependencies = [
+ "boolean_expression",
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "boolean_expression"
+version = "0.3.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7c33ef624481a2d2252fd352266c050e83203343d0884622f7ba09782abbfa83"
+dependencies = [
+ "itertools",
+ "smallvec",
+]
+
+[[package]]
 name = "cfg-if"
 version = "0.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -86,6 +108,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
+name = "either"
+version = "1.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "90e5c1c8368803113bf0c9584fc495a58b86dc8a29edbf8fe877d21d9507e797"
+
+[[package]]
 name = "embedded-hal"
 version = "0.2.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -96,11 +124,32 @@ dependencies = [
 ]
 
 [[package]]
+name = "hx711_spi"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9c5c69983ef5199a830d6232193c3443911ffe213765d63a4f3fb5f8f31452c2"
+dependencies = [
+ "bitmatch",
+ "embedded-hal",
+ "nb 1.0.0",
+]
+
+[[package]]
+name = "itertools"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "284f18f85651fe11e8a991b2adb42cb078325c996ed026d994719efcfca1d54b"
+dependencies = [
+ "either",
+]
+
+[[package]]
 name = "load_cell"
 version = "0.1.0"
 dependencies = [
  "arduino-hal",
  "embedded-hal",
+ "hx711_spi",
  "nb 1.0.0",
  "panic-halt",
  "ufmt 0.2.0",
@@ -186,6 +235,12 @@ name = "semver-parser"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "388a1df253eca08550bef6c72392cfe7c30914bf41df5269b68cbd6ff8f570a3"
+
+[[package]]
+name = "smallvec"
+version = "1.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2fd0db749597d91ff862fd1d55ea87f7855a744a8425a64695b6fca237d1dad1"
 
 [[package]]
 name = "syn"
