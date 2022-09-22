@@ -1,5 +1,6 @@
 [alias]
 arduino = "run --bin arduino_script -Z build-std=core --target avr-atmega328p.json --profile release-arduino"
+tui = "build --bin windows_interface --target x86_64-pc-windows-gnu --release"
 
 [target.'cfg(target_arch = "avr")']
-runner = "ravedude uno -cb 57600 -P /dev/ttyACM0"
+runner = "ravedude uno -cb 115200 -P /dev/ttyACM0"

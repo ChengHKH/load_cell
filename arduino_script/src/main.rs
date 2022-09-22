@@ -12,7 +12,7 @@ fn main() -> ! {
     let dp = arduino_hal::Peripherals::take().unwrap();
     let pins = arduino_hal::pins!(dp);
 
-    let mut serial = arduino_hal::default_serial!(dp, pins, 57600);
+    let mut serial = arduino_hal::default_serial!(dp, pins, 115200);
     let (spi, _) = arduino_hal::Spi::new(
         dp.SPI,
         pins.d13.into_output(),
