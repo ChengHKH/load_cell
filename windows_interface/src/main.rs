@@ -10,7 +10,6 @@ use std::{
 use tui::{
     backend::{Backend, CrosstermBackend},
     Terminal,
-    widgets::{Widget, Block, Borders},
 };
 use crossterm::{
     terminal::{enable_raw_mode, disable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
@@ -43,15 +42,43 @@ fn run<B: Backend>(
     mut app: App,
     tick_rate: Duration,
 ) -> io::Result<()> {
-    let mut last_tick = Instant::now;
-    terminal.draw(|f| {
-        let size = f.size();
-        let block = Block::default()
-            .title("Block")
-            .borders(Borders::ALL);
-        f.render_widget(block, size);
-    })?;
+    let mut last_tick = Instant::now();
 
-    thread::sleep(Duration::from_secs(5));
-    return Ok(());
+    loop {
+        terminal.draw(|f| ui::draw(f, &mut app))?;
+
+        let timeout = tick_rate
+            .checked_sub(last_tick.elapsed())
+            .unwrap_or_else(|| tick_rate);
+        if crossterm::event::poll(timeout)? {
+            // if let Event::Mouse(mouse) = event::read()? {
+
+            // }
+            if let Event::Key(key) = event::read()? {
+                match key.code {
+                    KeyCode::Left => app.on_left(),
+                    KeyCode::Right => app.on_right(),
+                    KeyCode::Enter => app.on_enter(),
+                    _ => {}
+                }
+            }
+        }
+        if last_tick.elapsed() >= tick_rate {
+            app.on_tick();
+            last_tick = Instant::now();
+        }
+        if app.should_quit {
+            return Ok(());
+        }
+    }
+
+    // terminal.draw(|f| {
+    //     let size = f.size();
+    //     let block = Block::default()
+    //         .title("Block")
+    //         .borders(Borders::ALL);
+    //     f.render_widget(block, size);
+    // })?;
+    // thread::sleep(Duration::from_secs(5));
+    // return Ok(());
 }
