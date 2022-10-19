@@ -4,12 +4,16 @@ pub mod app;
 pub mod ui;
 
 use app::App;
-use native_windows_gui as nwg;
-use nwg::NativeUi;
+use winsafe::{prelude::*, co, AnyResult, HWND};
 
 fn main() {
-    nwg::init().expect("Failed to init Native Windows GUI");
-    nwg::Font::set_global_family("Segoe UI").expect("Failed to set default font");
-    let _ui = App::build_ui(Default::default()).expect("Failed to build UI");
-    nwg::dispatch_thread_events();
+    if let Err(e) = run_app() {
+        HWND::NULL.MessageBox(&e.to_string(), "Uncaught error", co::MB::ICONERROR).unwrap();
+    }
+}
+
+fn run_app() -> AnyResult<i32> {
+    App::new()
+        .run()
+        .map_err(|err| err.into())
 }
