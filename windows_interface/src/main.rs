@@ -1,6 +1,7 @@
 #![windows_subsystem = "windows"]
 
 pub mod app;
+pub mod ids;
 pub mod ui;
 
 use app::App;
