@@ -1,8 +1,9 @@
 use crate::ids;
 
-use winsafe::{prelude::*, co, IdPos, SysResult};
+use winsafe::{prelude::*, co, IdPos, SysResult, gui};
 
-pub fn build_menu() -> winsafe::AnyResult<winsafe::HMENU> {
+
+fn build_menu() -> winsafe::AnyResult<winsafe::HMENU> {
     let file_submenu = winsafe::HMENU::CreatePopupMenu()?;
     let options_submenu = winsafe::HMENU::CreatePopupMenu()?;
 
@@ -39,12 +40,27 @@ pub fn build_menu() -> winsafe::AnyResult<winsafe::HMENU> {
     Ok(main_menu)
 }
 
-fn select_units(&check) -> SysResult<()> {
-    options_submenu.CheckMenuRadioItem(
-        IdPos::Id(ids::OPTIONS_KG),
-        IdPos::Id(ids::OPTIONS_N),
-        IdPos::Id(check),
-    )?;
 
-    Ok(())
+pub fn build_window() -> gui::WindowMain {
+    let menu = build_menu().unwrap();
+    
+    gui::WindowMain::new(
+        gui::WindowMainOpts {
+            title: "Load Cell Reader".to_owned(),
+            size: winsafe::SIZE::new(300, 150),
+            menu,
+            ..Default::default()
+        }
+    )
 }
+
+
+// fn select_units(&check) -> SysResult<()> {
+//     options_submenu.CheckMenuRadioItem(
+//         IdPos::Id(ids::OPTIONS_KG),
+//         IdPos::Id(ids::OPTIONS_N),
+//         IdPos::Id(check),
+//     )?;
+
+//     Ok(())
+// }
