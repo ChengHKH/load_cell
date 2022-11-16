@@ -2,6 +2,8 @@ use winsafe::seq_ids;
 
 seq_ids! {
     FILE_NEW = 1000;
+    SAVE
+    SAVE_AS
 }
 
 seq_ids! {
