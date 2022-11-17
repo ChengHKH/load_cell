@@ -6,12 +6,14 @@ use serialport;
 #[derive(Clone)]
 pub struct App {
     window: gui::WindowMain,
+    reader: gui::WindowControl,
 }
 
 impl App {
     pub fn new() -> App {
         let window = ui::build_main();
-        let new_self = Self {window};
+        let reader = ui::build_reader(&window);
+        let new_self = Self {window, reader};
         new_self.events();
         new_self
     }
@@ -31,7 +33,6 @@ impl App {
 
     }
 }
-
 
 struct Logger {
     window: gui::WindowMain,

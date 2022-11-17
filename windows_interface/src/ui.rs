@@ -1,6 +1,6 @@
 use crate::ids;
 
-use winsafe::{prelude::*, co, IdPos, SysResult, gui};
+use winsafe::{prelude::*, co, IdPos, SysResult, gui, POINT, SIZE};
 
 pub fn build_logger() -> gui::WindowMain {
     let menu = build_logger_menu().unwrap();
@@ -8,7 +8,7 @@ pub fn build_logger() -> gui::WindowMain {
     gui::WindowMain::new(
         gui::WindowMainOpts {
             title: "Load Cell Logger".to_owned(),
-            size: winsafe::SIZE::new(600, 300),
+            size: SIZE::new(600, 300),
             menu,
             ..Default::default()
         }
@@ -54,7 +54,7 @@ pub fn build_main() -> gui::WindowMain {
     gui::WindowMain::new(
         gui::WindowMainOpts {
             title: "Load Cell Reader".to_owned(),
-            size: winsafe::SIZE::new(300, 150),
+            size: SIZE::new(300, 150),
             menu,
             ..Default::default()
         }
@@ -96,6 +96,17 @@ fn build_main_menu() -> winsafe::AnyResult<winsafe::HMENU> {
     ])?;
 
     Ok(main_menu)
+}
+
+pub fn build_reader(parent: &impl GuiParent) -> gui::WindowControl {
+    gui::WindowControl::new(
+        parent,
+        gui::WindowControlOpts {
+            position: POINT::new(10, 10),
+            size: SIZE::new(280, 130),
+            ..Default::default()
+        }
+    )
 }
 
 // fn select_units(&check) -> SysResult<()> {
