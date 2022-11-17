@@ -1,4 +1,4 @@
-#![windows_subsystem = "windows"]
+// #![windows_subsystem = "windows"]
 
 pub mod app;
 pub mod ids;
@@ -8,6 +8,8 @@ use app::App;
 use winsafe::{prelude::*, co, AnyResult, HWND};
 
 fn main() {
+    println!("Finding serial ports...");
+    app::list_ports();
     if let Err(e) = run_app() {
         HWND::NULL.MessageBox(&e.to_string(), "Uncaught error", co::MB::ICONERROR).unwrap();
     }
