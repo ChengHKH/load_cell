@@ -5,6 +5,3 @@ gui = "build --bin windows_interface --target x86_64-pc-windows-msvc --release"
 
 [target.'cfg(target_arch = "avr")']
 runner = "ravedude uno -cb 115200 -P /dev/ttyACM0"
-
-[target.x86_64-pc-windows-msvc]
-linker = "../../msvc-linker/linker-x64.sh"
