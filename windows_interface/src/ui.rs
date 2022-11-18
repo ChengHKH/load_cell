@@ -109,6 +109,17 @@ pub fn build_reader(parent: &impl GuiParent) -> gui::WindowControl {
     )
 }
 
+pub fn build_reading(parent: &impl GuiParent) -> gui::Label {
+    gui::Label::new(
+        parent,
+        gui::LabelOpts {
+            position: POINT::new(10, 10),
+            size: SIZE::new(280, 130),
+            label_style: co::SS::CENTER,
+            ..Default::default()
+        })
+}
+
 // fn select_units(&check) -> SysResult<()> {
 //     options_submenu.CheckMenuRadioItem(
 //         IdPos::Id(ids::OPTIONS_KG),

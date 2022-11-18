@@ -73,7 +73,7 @@ impl Reader {
     pub fn new(parent: &impl GuiParent) -> Self {
         let window = ui::build_reader(parent);
 
-        let reading = ui::build_reading();
+        let reading = ui::build_reading(&window);
 
         let new_self = Self {
             window,
