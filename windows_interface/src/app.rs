@@ -10,17 +10,16 @@ pub fn list_ports() {
     }
 }
 
-
 #[derive(Clone)]
 pub struct App {
     window: gui::WindowMain,
-    reader: gui::WindowControl,
+    reader: Reader,
 }
 
 impl App {
     pub fn new() -> App {
         let window = ui::build_main();
-        let reader = ui::build_reader(&window);
+        let reader = Reader::new(&window);
         let new_self = Self {window, reader};
         new_self.events();
         new_self
@@ -42,12 +41,13 @@ impl App {
     }
 }
 
+#[derive(Clone)]
 struct Logger {
     window: gui::WindowMain,
 }
 
 impl Logger {
-    pub fn new() -> Logger {
+    pub fn new() -> Self {
         let window = ui::build_logger();
         let new_self = Self {window};
         new_self.events();
@@ -56,6 +56,31 @@ impl Logger {
 
     pub fn run(&self) -> gui::MsgResult<i32> {
         self.window.run_main(None)
+    }
+
+    fn events(&self) {
+
+    }
+}
+
+#[derive(Clone)]
+struct Reader {
+    window: gui::WindowControl,
+    reading: gui::Label,
+}
+
+impl Reader {
+    pub fn new(parent: &impl GuiParent) -> Self {
+        let window = ui::build_reader(parent);
+
+        let reading = ui::build_reading();
+
+        let new_self = Self {
+            window,
+            reading,
+        };
+        new_self.events();
+        new_self
     }
 
     fn events(&self) {
