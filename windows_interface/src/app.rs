@@ -72,7 +72,6 @@ struct Reader {
 impl Reader {
     pub fn new(parent: &impl GuiParent) -> Self {
         let window = ui::build_reader(parent);
-
         let reading = ui::build_reading(&window);
 
         let new_self = Self {
@@ -84,7 +83,20 @@ impl Reader {
     }
 
     fn events(&self) {
+        self.window.on().wm_create({
+            let reader_window = self.window.clone();
+            move || {
+                reader_window.hwnd().SetTimer(1, 1000, None)?;
+                Ok(())
+            }
+        });
 
+        self.window.on().wm_timer(1, {
+            let reader_window = self.window.clone();
+            move || {
+                
+            }
+        });
     }
 }
 
