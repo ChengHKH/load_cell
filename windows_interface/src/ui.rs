@@ -102,8 +102,8 @@ pub fn build_reader(parent: &impl GuiParent) -> gui::WindowControl {
     gui::WindowControl::new(
         parent,
         gui::WindowControlOpts {
-            position: POINT::new(10, 10),
-            size: SIZE::new(280, 130),
+            position: POINT::new(0, 0),
+            size: SIZE::new(300, 150),
             ..Default::default()
         }
     )
@@ -114,11 +114,13 @@ pub fn build_reading(parent: &impl GuiParent) -> gui::Label {
         parent,
         gui::LabelOpts {
             text: "TEST TEXT".to_string(),
-            position: POINT::new(0, 0),
+            position: POINT::new(10, 10),
             size: SIZE::new(280, 130),
             label_style: co::SS::CENTER,
+            window_ex_style: gui::LabelOpts::default().window_ex_style | co::WS_EX::STATICEDGE,
             ..Default::default()
-        })
+        }
+    )
 }
 
 // fn select_units(&check) -> SysResult<()> {
