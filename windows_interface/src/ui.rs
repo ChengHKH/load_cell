@@ -1,6 +1,6 @@
 use crate::ids;
 
-use winsafe::{prelude::*, co, IdPos, SysResult, gui, POINT, SIZE};
+use winsafe::{prelude::*, co, IdPos, SysResult, gui, POINT, SIZE, HINSTANCE, IdStr, RtStr};
 
 pub fn build_logger() -> gui::WindowMain {
     let menu = build_logger_menu().unwrap();
@@ -102,26 +102,40 @@ pub fn build_reader(parent: &impl GuiParent) -> gui::WindowControl {
     gui::WindowControl::new(
         parent,
         gui::WindowControlOpts {
-            position: POINT::new(0, 0),
-            size: SIZE::new(300, 150),
+            position: POINT::new(10, 10),
+            size: SIZE::new(280, 130),
             ..Default::default()
         }
     )
 }
 
-pub fn build_reading(parent: &impl GuiParent) -> gui::Label {
-    gui::Label::new(
-        parent,
-        gui::LabelOpts {
-            text: "TEST TEXT".to_string(),
-            position: POINT::new(10, 10),
-            size: SIZE::new(280, 130),
-            label_style: co::SS::CENTER,
-            window_ex_style: gui::LabelOpts::default().window_ex_style | co::WS_EX::STATICEDGE,
-            ..Default::default()
-        }
-    )
+fn load_font() -> &[u8] {
+    let hInstance = HINSTANCE::GetModuleHandle(None)?;
+    
+    let hFntRes = hInstance.FindResource(
+        IdStr::Id(ids::RDR_FONT),
+        RtStr::Rt(co::RT::FONT)
+    )?;
+
+    let hFntMem = hInstance.LoadResource(hFntRes)?;
+    let FntData = hInstance.LockResource(hFntRes, hFntMem)?;
+
+    return FntData
 }
+
+// pub fn build_reading(parent: &impl GuiParent) -> gui::Label {
+//     gui::Label::new(
+//         parent,
+//         gui::LabelOpts {
+//             text: "TEST TEXT".to_string(),
+//             position: POINT::new(10, 10),
+//             size: SIZE::new(280, 130),
+//             label_style: co::SS::CENTER,
+//             window_ex_style: gui::LabelOpts::default().window_ex_style | co::WS_EX::STATICEDGE,
+//             ..Default::default()
+//         }
+//     )
+// }
 
 // fn select_units(&check) -> SysResult<()> {
 //     options_submenu.CheckMenuRadioItem(

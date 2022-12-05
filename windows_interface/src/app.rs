@@ -66,17 +66,17 @@ impl Logger {
 #[derive(Clone)]
 struct Reader {
     window: gui::WindowControl,
-    reading: gui::Label,
+    // reading: gui::Label,
 }
 
 impl Reader {
     pub fn new(parent: &impl GuiParent) -> Self {
         let window = ui::build_reader(parent);
-        let reading = ui::build_reading(&window);
+        // let reading = ui::build_reading(&window);
 
         let new_self = Self {
             window,
-            reading,
+            // reading,
         };
         new_self.events();
         new_self
@@ -92,10 +92,10 @@ impl Reader {
         });
 
         self.window.on().wm_timer(1, {
-            let reading_window = self.reading.clone();
+            let reader_window = self.window.clone();
             move || {
-                reading_window.hwnd().RedrawWindow(
-                    &reading_window.hwnd().GetClientRect()?,
+                reader_window.hwnd().RedrawWindow(
+                    &reader_window.hwnd().GetClientRect()?,
                     Handle::NULL,
                     co::RDW::INVALIDATE
                 );

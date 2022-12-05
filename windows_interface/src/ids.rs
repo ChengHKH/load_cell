@@ -1,6 +1,10 @@
 use winsafe::seq_ids;
 
 seq_ids! {
+    RDR_FONT = 101;
+}
+
+seq_ids! {
     FILE_NEW = 1000;
     SAVE
     SAVE_AS
