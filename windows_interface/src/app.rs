@@ -1,6 +1,6 @@
 use crate::{ids, ui};
 
-use winsafe::{prelude::*, gui};
+use winsafe::{prelude::*, gui, co};
 use serialport;
 
 pub fn list_ports() {
@@ -85,16 +85,21 @@ impl Reader {
     fn events(&self) {
         self.window.on().wm_create({
             let reader_window = self.window.clone();
-            move || {
+            move |_| {
                 reader_window.hwnd().SetTimer(1, 1000, None)?;
-                Ok(())
+                Ok(0)
             }
         });
 
         self.window.on().wm_timer(1, {
-            let reader_window = self.window.clone();
+            let reading_window = self.reading.clone();
             move || {
-                
+                reading_window.hwnd().RedrawWindow(
+                    &reading_window.hwnd().GetClientRect()?,
+                    Handle::NULL,
+                    co::RDW::INVALIDATE
+                );
+                Ok(())
             }
         });
     }
