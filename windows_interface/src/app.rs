@@ -106,8 +106,12 @@ impl Reader {
     }
 }
 
-fn get_reading() -> &'static str {
-    "1002 kg"
+fn get_reading<'a>() -> [&'a str; 2] {
+    let value = "1.23";
+
+    let unit = " kg";
+
+    [value, unit]
 }
 
 pub fn list_ports() {

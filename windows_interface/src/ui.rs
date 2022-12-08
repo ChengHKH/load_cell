@@ -109,10 +109,28 @@ pub fn build_reader(parent: &impl GuiParent) -> gui::WindowControl {
     )
 }
 
-pub fn draw_reading(hwnd: HWND, reading: &str) -> winsafe::AnyResult<()> {
+pub fn draw_reading(hwnd: HWND, reading: [&str; 2]) -> winsafe::AnyResult<()> {
     let mut ps = PAINTSTRUCT::default();
     let hdc = hwnd.BeginPaint(&mut ps)?;
     
+    let hfont = HFONT::CreateFont(
+        SIZE::new(0, 100),
+        0,
+        0,
+        co::FW::BOLD,
+        false,
+        false,
+        false,
+        co::CHARSET::DEFAULT,
+        co::OUT_PRECIS::DEFAULT,
+        co::CLIP::DEFAULT_PRECIS,
+        co::QUALITY::DEFAULT,
+        co::PITCH::DEFAULT,
+        "Consolas")?;
+    hdc.SelectObjectFont(hfont)?;
+    hdc.TextOut(10, 10, reading[0])?;
+    hfont.DeleteObject()?;
+
     let hfont = HFONT::CreateFont(
         SIZE::new(0, 100),
         0,
@@ -128,27 +146,12 @@ pub fn draw_reading(hwnd: HWND, reading: &str) -> winsafe::AnyResult<()> {
         co::PITCH::DEFAULT,
         "Consolas")?;
     hdc.SelectObjectFont(hfont)?;
-    hdc.TextOut(10, 10, reading)?;
-    
+    hdc.TextOut(10 + hdc.GetTextExtentPoint32(reading[0])?.cx, 10, reading[1])?;
     hfont.DeleteObject()?;
 
     hwnd.EndPaint(&ps);
     Ok(())
 }
-
-// pub fn build_reading(parent: &impl GuiParent) -> gui::Label {
-//     gui::Label::new(
-//         parent,
-//         gui::LabelOpts {
-//             text: "TEST TEXT".to_string(),
-//             position: POINT::new(10, 10),
-//             size: SIZE::new(280, 130),
-//             label_style: co::SS::CENTER,
-//             window_ex_style: gui::LabelOpts::default().window_ex_style | co::WS_EX::STATICEDGE,
-//             ..Default::default()
-//         }
-//     )
-// }
 
 // fn select_units(&check) -> SysResult<()> {
 //     options_submenu.CheckMenuRadioItem(
