@@ -1,6 +1,6 @@
 use crate::ids;
 
-use winsafe::{prelude::*, co, IdPos, SysResult, gui, POINT, SIZE};
+use winsafe::{prelude::*, co, gui, POINT, SIZE, HWND, PAINTSTRUCT, HFONT};
 
 pub fn build_logger() -> gui::WindowMain {
     let menu = build_logger_menu().unwrap();
@@ -102,11 +102,38 @@ pub fn build_reader(parent: &impl GuiParent) -> gui::WindowControl {
     gui::WindowControl::new(
         parent,
         gui::WindowControlOpts {
-            position: POINT::new(10, 10),
-            size: SIZE::new(280, 130),
+            position: POINT::new(0, 0),
+            size: SIZE::new(300, 150),
             ..Default::default()
         }
     )
+}
+
+pub fn draw_reading(hwnd: HWND, reading: &str) -> winsafe::AnyResult<()> {
+    let mut ps = PAINTSTRUCT::default();
+    let hdc = hwnd.BeginPaint(&mut ps)?;
+    
+    let hfont = HFONT::CreateFont(
+        SIZE::new(0, 100),
+        0,
+        0,
+        co::FW::DONTCARE,
+        false,
+        false,
+        false,
+        co::CHARSET::DEFAULT,
+        co::OUT_PRECIS::DEFAULT,
+        co::CLIP::DEFAULT_PRECIS,
+        co::QUALITY::DEFAULT,
+        co::PITCH::DEFAULT,
+        "Consolas")?;
+    hdc.SelectObjectFont(hfont)?;
+    hdc.TextOut(10, 10, reading)?;
+    
+    hfont.DeleteObject()?;
+
+    hwnd.EndPaint(&ps);
+    Ok(())
 }
 
 // pub fn build_reading(parent: &impl GuiParent) -> gui::Label {

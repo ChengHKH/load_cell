@@ -1,14 +1,7 @@
-use crate::{ids, ui};
+use crate::{ids, ui::{self, draw_reading}};
 
 use winsafe::{prelude::*, gui, co};
 use serialport;
-
-pub fn list_ports() {
-    let ports = serialport::available_ports().expect("No ports found!");
-    for p in ports {
-        println!("{}", p.port_name);
-    }
-}
 
 #[derive(Clone)]
 pub struct App {
@@ -91,17 +84,36 @@ impl Reader {
             }
         });
 
+        self.window.on().wm_paint({
+            let reader_window = self.window.clone();
+            move || {
+                draw_reading(reader_window.hwnd(), get_reading());
+                Ok(())
+            }
+        });
+
         self.window.on().wm_timer(1, {
             let reader_window = self.window.clone();
             move || {
                 reader_window.hwnd().RedrawWindow(
                     &reader_window.hwnd().GetClientRect()?,
                     Handle::NULL,
-                    co::RDW::INVALIDATE
+                    co::RDW::INVALIDATE | co::RDW::UPDATENOW,
                 );
                 Ok(())
             }
         });
+    }
+}
+
+fn get_reading() -> &'static str {
+    "1002 kg"
+}
+
+pub fn list_ports() {
+    let ports = serialport::available_ports().expect("No ports found!");
+    for p in ports {
+        println!("{}", p.port_name);
     }
 }
 
