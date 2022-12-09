@@ -1,7 +1,7 @@
 use crate::{ids, ui::{self, draw_reading}};
 
 use winsafe::{prelude::*, gui, co};
-use serialport;
+use serialport::{self, SerialPortType};
 
 #[derive(Clone)]
 pub struct App {
@@ -117,8 +117,11 @@ fn get_reading<'a>() -> [&'a str; 2] {
 pub fn list_ports() {
     let ports = serialport::available_ports().expect("No ports found!");
     for p in ports {
-        println!("{}", p.port_name);
-    }
+        println!("{}: ", p.port_name);
+        if let SerialPortType::UsbPort(i) = p.port_type {
+            println!("{:?}", i);
+        }
+    };
 }
 
 #[cfg(tests)]
