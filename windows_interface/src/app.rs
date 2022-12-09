@@ -24,9 +24,8 @@ impl App {
 
     fn events(&self) {
         self.window.on().wm_command_accel_menu(ids::FILE_NEW, {
-            let main_window = self.window.clone();
             move || {
-                let logger = Logger::new().run();
+                let _logger = Logger::new().run();
                 Ok(())
             }
         });
@@ -87,7 +86,7 @@ impl Reader {
         self.window.on().wm_paint({
             let reader_window = self.window.clone();
             move || {
-                draw_reading(reader_window.hwnd(), get_reading());
+                draw_reading(reader_window.hwnd(), get_reading())?;
                 Ok(())
             }
         });
@@ -99,7 +98,7 @@ impl Reader {
                     &reader_window.hwnd().GetClientRect()?,
                     Handle::NULL,
                     co::RDW::INVALIDATE | co::RDW::UPDATENOW,
-                );
+                )?;
                 Ok(())
             }
         });
