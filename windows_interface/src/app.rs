@@ -1,5 +1,6 @@
 use crate::{ids, ui::{self, draw_reading}};
 
+use std::time::Duration;
 use winsafe::{prelude::*, gui, co};
 use serialport::{self, SerialPortType};
 
@@ -23,9 +24,16 @@ impl App {
     }
 
     fn events(&self) {
+        self.window.on().wm_create({
+           move |_| {
+                // get_ports();
+                Ok(0)
+           } 
+        });
+
         self.window.on().wm_command_accel_menu(ids::FILE_NEW, {
             move || {
-                let _logger = Logger::new().run();
+                let _logger = Logger::new().run()?;
                 Ok(())
             }
         });
@@ -113,17 +121,29 @@ fn get_reading<'a>() -> [&'a str; 2] {
     [value, unit]
 }
 
-pub fn list_ports() {
+pub fn get_ports() {
+    println!("Finding serial ports...");
     let ports = serialport::available_ports().expect("No ports found!");
     for p in ports {
-        println!("{}: ", p.port_name);
         if let SerialPortType::UsbPort(i) = p.port_type {
-            println!("{:?}", i);
+            if i.vid == 9025 || i.vid == 10755 {
+                let port = serialport::new(p.port_name, 115200)
+                    .open();
+            
+                match port {
+                    Ok(mut port) => {
+                        println!("Succuss! Found arduino port!")
+                    }
+                    Err(e) => {
+                        eprintln!("Failed!")
+                    }
+                }    
+            }
         }
     };
 }
 
 #[cfg(tests)]
 mod tests {
-
+    
 }
