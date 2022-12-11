@@ -1,6 +1,7 @@
 use crate::ids;
 
 use winsafe::{prelude::*, co, gui, POINT, SIZE, HWND, PAINTSTRUCT, HFONT};
+use serialport;
 
 pub fn build_logger() -> gui::WindowMain {
     let menu = build_logger_menu().unwrap();
@@ -98,6 +99,58 @@ fn build_main_menu() -> winsafe::AnyResult<winsafe::HMENU> {
     Ok(main_menu)
 }
 
+pub fn build_modal(parent: &impl GuiParent) -> gui::WindowModal {
+    gui::WindowModal::new(
+        parent,
+        gui::WindowModalOpts {
+            ..Default::default()
+        }
+    )
+}
+
+pub fn build_modal_cancel(parent: &impl GuiParent) -> gui::Button {
+    gui::Button::new(
+        parent,
+        gui::ButtonOpts {
+            text: "Cancel".to_owned(),
+            position: POINT::new(216, 300),
+            ..Default::default()
+        }
+    )
+}
+
+pub fn build_modal_ok(parent: &impl GuiParent) -> gui::Button {
+    gui::Button::new(
+        parent,
+        gui::ButtonOpts {
+            text: "Ok".to_owned(),
+            position: POINT::new(108, 300),
+            ..Default::default()
+        }
+    )
+}
+
+pub fn build_ports_list(parent: &impl GuiParent, ports: Vec<serialport::SerialPortInfo>) -> gui::ComboBox {
+    let mut port_names = Vec::new();
+    for port in ports.iter() {
+        if let serialport::SerialPortType::UsbPort(i) = port.port_type {
+            let name = i.product.unwrap_or_else(
+                || i.manufacturer.unwrap_or_else(
+                    || String::from("Unknown")) + "USB");
+
+            port_names.push(name);
+        }
+    };
+
+    gui::ComboBox::new(
+        parent,
+        gui::ComboBoxOpts {
+            items: port_names,
+            ..Default::default()
+        }
+    )
+}
+
 pub fn build_reader(parent: &impl GuiParent) -> gui::WindowControl {
     gui::WindowControl::new(
         parent,
@@ -151,6 +204,26 @@ pub fn draw_reading(hwnd: HWND, reading: [&str; 2]) -> winsafe::AnyResult<()> {
 
     hwnd.EndPaint(&ps);
     Ok(())
+}
+
+pub fn text_not_connected(parent: &impl GuiParent) -> gui::Label {
+    gui::Label::new(
+        parent,
+        gui::LabelOpts {
+            text: "Connection unsuccessful.".to_owned(),
+            ..Default::default()
+        }
+    )
+}
+
+pub fn text_no_ports(parent: &impl GuiParent) -> gui::Label {
+    gui::Label::new(
+        parent,
+        gui::LabelOpts {
+            text: "No Arduinos found. Please insert an Arduino to use this tool.".to_owned(),
+            ..Default::default()
+        }
+    )
 }
 
 // fn select_units(&check) -> SysResult<()> {

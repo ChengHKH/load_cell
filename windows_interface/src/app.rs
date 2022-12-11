@@ -1,4 +1,6 @@
-use crate::{ids, ui::{self, draw_reading}};
+use std::{rc::Rc, cell::RefCell};
+
+use crate::{ids, ui::{self, draw_reading}, main};
 
 use winsafe::{prelude::*, gui, co};
 use serialport::{self, SerialPortType};
@@ -24,8 +26,21 @@ impl App {
 
     fn events(&self) {
         self.window.on().wm_create({
-           move |_| {
-                get_ports();
+            let main_window = self.window.clone(); 
+            move |_| {
+                let ports = get_ports();
+                match ports {
+                    Some(info) => {
+                        let port = DLGSomePorts::new(&main_window, info).show();
+                        match port {
+                            Some(i) => {
+                                open_port(i);
+                            },
+                            None => DLGNotConnected::new(&main_window).show(),
+                        }
+                    },
+                    None => DLGNoPorts::new(&main_window).show(),
+                };
                 Ok(0)
            }
         });
@@ -37,6 +52,95 @@ impl App {
             }
         });
 
+    }
+}
+
+#[derive(Clone)]
+struct DLGNotConnected {
+    window: gui::WindowModal,
+    text: gui::Label,
+}
+
+impl DLGNotConnected {
+    pub fn new(parent: &impl GuiParent) -> Self {
+        let window = ui::build_modal(parent);
+        let text = ui::text_not_connected(&window);
+        let new_self = Self {window, text};
+        new_self.events();
+        new_self
+    }
+
+    pub fn show(&self) {
+        self.window.show_modal();
+    }
+
+    fn events(&self) {
+
+    }
+}
+
+#[derive(Clone)]
+struct DLGNoPorts {
+    window: gui::WindowModal,
+    text: gui::Label,
+}
+
+impl DLGNoPorts {
+    pub fn new(parent: &impl GuiParent) -> Self {
+        let window = ui::build_modal(parent);
+        let text = ui::text_no_ports(&window);
+        let new_self = Self {window, text};
+        new_self.events();
+        new_self
+    }
+
+    pub fn show(&self) {
+        self.window.show_modal();
+    }
+
+    fn events(&self) {
+
+    }
+}
+
+#[derive(Clone)]
+struct DLGSomePorts {
+    window: gui::WindowModal,
+    ports_list: gui::ComboBox,
+    btn_ok: gui::Button,
+    btn_cancel: gui::Button,
+    
+    return_value: Rc<RefCell<Option<serialport::SerialPortInfo>>>,
+}
+
+impl DLGSomePorts {
+    pub fn new(parent: &impl GuiParent, ports: Vec<serialport::SerialPortInfo>) -> Self {
+        let window = ui::build_modal(parent);
+        let ports_list = ui::build_ports_list(&window, ports);
+        let btn_ok = ui::build_modal_ok(&window);
+        let btn_cancel = ui::build_modal_cancel(&window);
+        
+        let new_self = Self {
+            window,
+            ports_list,
+            btn_ok,
+            btn_cancel,
+            return_value: Rc::new(RefCell::new(None)),
+        };
+
+        new_self.events();
+        new_self
+    }
+
+    pub fn show(&self) -> Option<serialport::SerialPortInfo> {
+        self.window.show_modal();
+        self.return_value.borrow().as_ref().map(|info| info.clone())
+    }
+
+    fn events(&self) {
+        // self.btn_ok.on().bn_clicked({
+            
+        // });
     }
 }
 
@@ -120,7 +224,7 @@ fn get_reading<'a>() -> [&'a str; 2] {
     [value, unit]
 }
 
-pub fn get_ports() -> Option<Vec<serialport::UsbPortInfo>> {
+fn get_ports() -> Option<Vec<serialport::SerialPortInfo>> {
     println!("Finding serial ports...");
     let ports = serialport::available_ports().expect("No ports found!");
     let mut arduino_ports = Vec::new();
@@ -128,7 +232,7 @@ pub fn get_ports() -> Option<Vec<serialport::UsbPortInfo>> {
     for p in ports {
         if let SerialPortType::UsbPort(i) = p.port_type {
             if i.vid == 9025 || i.vid == 10755 {
-                arduino_ports.push(i);
+                arduino_ports.push(p);
             }
         }
     };
@@ -138,6 +242,10 @@ pub fn get_ports() -> Option<Vec<serialport::UsbPortInfo>> {
     } else {
         Some(arduino_ports)
     }
+}
+
+fn open_port(port: serialport::SerialPortInfo) -> serialport::Result<Box<dyn serialport::SerialPort>> {
+    serialport::new(port.port_name, 115200).open()
 }
 
 // let port = serialport::new(p.port_name, 115200)
