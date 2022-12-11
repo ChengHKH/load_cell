@@ -1,6 +1,5 @@
 use crate::{ids, ui::{self, draw_reading}};
 
-use std::time::Duration;
 use winsafe::{prelude::*, gui, co};
 use serialport::{self, SerialPortType};
 
@@ -121,27 +120,37 @@ fn get_reading<'a>() -> [&'a str; 2] {
     [value, unit]
 }
 
-pub fn get_ports() {
+pub fn get_ports() -> Option<Vec<serialport::UsbPortInfo>> {
     println!("Finding serial ports...");
     let ports = serialport::available_ports().expect("No ports found!");
+    let mut arduino_ports = Vec::new();
+    
     for p in ports {
         if let SerialPortType::UsbPort(i) = p.port_type {
             if i.vid == 9025 || i.vid == 10755 {
-                let port = serialport::new(p.port_name, 115200)
-                    .open();
-            
-                match port {
-                    Ok(mut port) => {
-                        println!("Succuss! Found arduino port!")
-                    }
-                    Err(e) => {
-                        eprintln!("Failed!")
-                    }
-                }    
+                arduino_ports.push(i);
             }
         }
     };
+
+    if arduino_ports.len() == 0 {
+        None
+    } else {
+        Some(arduino_ports)
+    }
 }
+
+// let port = serialport::new(p.port_name, 115200)
+//                     .open();
+            
+//                 match port {
+//                     Ok(mut port) => {
+//                         println!("Success! Found arduino port!")
+//                     }
+//                     Err(e) => {
+//                         eprintln!("Failed!")
+//                     }
+//                 }
 
 #[cfg(tests)]
 mod tests {
