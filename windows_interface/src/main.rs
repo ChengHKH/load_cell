@@ -8,7 +8,6 @@ use app::App;
 use winsafe::{prelude::*, co, AnyResult, HWND};
 
 fn main() {
-    app::get_ports();
     if let Err(e) = run_app() {
         HWND::NULL.MessageBox(&e.to_string(), "Uncaught error", co::MB::ICONERROR).unwrap();
     }

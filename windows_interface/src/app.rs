@@ -25,9 +25,9 @@ impl App {
     fn events(&self) {
         self.window.on().wm_create({
            move |_| {
-                // get_ports();
+                get_ports();
                 Ok(0)
-           } 
+           }
         });
 
         self.window.on().wm_command_accel_menu(ids::FILE_NEW, {
