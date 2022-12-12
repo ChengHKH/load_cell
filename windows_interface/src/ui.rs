@@ -55,6 +55,7 @@ pub fn build_main() -> gui::WindowMain {
     gui::WindowMain::new(
         gui::WindowMainOpts {
             title: "Load Cell Reader".to_owned(),
+            // class_icon: gui::Icon::Id(101),
             size: SIZE::new(300, 150),
             menu,
             ..Default::default()
@@ -109,23 +110,34 @@ pub fn build_modal(parent: &impl GuiParent) -> gui::WindowModal {
     )
 }
 
-pub fn build_modal_cancel(parent: &impl GuiParent) -> gui::Button {
-    gui::Button::new(
+pub fn build_modal_error(parent: &impl GuiParent) -> gui::WindowModal {
+    gui::WindowModal::new(
         parent,
-        gui::ButtonOpts {
-            text: "Cancel".to_owned(),
-            position: POINT::new(216, 300),
+        gui::WindowModalOpts {
+            size: SIZE::new(300, 150),
             ..Default::default()
         }
     )
 }
 
-pub fn build_modal_ok(parent: &impl GuiParent) -> gui::Button {
+pub fn build_modal_cancel(parent: &impl GuiParent, modal: &str, number: u8) -> gui::Button {
     gui::Button::new(
         parent,
         gui::ButtonOpts {
-            text: "Ok".to_owned(),
-            position: POINT::new(108, 300),
+            text: "Cancel".to_owned(),
+            position: btn_position(modal, number).unwrap(),
+            ..Default::default()
+        }
+    )
+}
+
+pub fn build_modal_ok(parent: &impl GuiParent, modal: &str, number: u8) -> gui::Button {
+    gui::Button::new(
+        parent,
+        gui::ButtonOpts {
+            text: "OK".to_owned(),
+            position: btn_position(modal, number).unwrap(),
+            height: 23,
             ..Default::default()
         }
     )
@@ -161,6 +173,20 @@ pub fn build_reader(parent: &impl GuiParent) -> gui::WindowControl {
             ..Default::default()
         }
     )
+}
+
+fn btn_position(modal: &str, number: u8) -> Option<POINT> {
+    match modal {
+        "input" => match number {
+            _ => None,
+        }
+        "error" => match number {
+            1 => Some(POINT::new(202, 117)),
+            2 => Some(POINT::new(94, 117)),
+            _ => None,
+        },
+        _ => None,
+    }
 }
 
 pub fn draw_reading(hwnd: HWND, reading: [&str; 2]) -> winsafe::AnyResult<()> {
