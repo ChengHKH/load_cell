@@ -132,7 +132,7 @@ pub fn build_modal_ok(parent: &impl GuiParent) -> gui::Button {
 
 pub fn build_ports_list(parent: &impl GuiParent, ports: Vec<serialport::SerialPortInfo>) -> gui::ComboBox {
     let mut port_names = Vec::new();
-    for port in ports.iter() {
+    for port in ports {
         if let serialport::SerialPortType::UsbPort(i) = port.port_type {
             let name = i.product.unwrap_or_else(
                 || i.manufacturer.unwrap_or_else(

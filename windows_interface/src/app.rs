@@ -1,6 +1,6 @@
 use std::{rc::Rc, cell::RefCell};
 
-use crate::{ids, ui::{self, draw_reading}, main};
+use crate::{ids, ui};
 
 use winsafe::{prelude::*, gui, co};
 use serialport::{self, SerialPortType};
@@ -197,7 +197,7 @@ impl Reader {
         self.window.on().wm_paint({
             let reader_window = self.window.clone();
             move || {
-                draw_reading(reader_window.hwnd(), get_reading())?;
+                ui::draw_reading(reader_window.hwnd(), get_reading())?;
                 Ok(())
             }
         });
@@ -230,7 +230,7 @@ fn get_ports() -> Option<Vec<serialport::SerialPortInfo>> {
     let mut arduino_ports = Vec::new();
     
     for p in ports {
-        if let SerialPortType::UsbPort(i) = p.port_type {
+        if let SerialPortType::UsbPort(ref i) = p.port_type {
             if i.vid == 9025 || i.vid == 10755 {
                 arduino_ports.push(p);
             }
