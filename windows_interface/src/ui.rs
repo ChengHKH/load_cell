@@ -1,6 +1,6 @@
 use crate::ids;
 
-use winsafe::{prelude::*, co, gui, POINT, SIZE, HWND, PAINTSTRUCT, HFONT};
+use winsafe::{prelude::*, co, gui, HWND, HFONT, POINT, SIZE, PAINTSTRUCT, MulDiv};
 use serialport;
 
 pub fn build_logger() -> gui::WindowMain {
@@ -168,7 +168,7 @@ pub fn draw_reading(hwnd: HWND, reading: [&str; 2]) -> winsafe::AnyResult<()> {
     let hdc = hwnd.BeginPaint(&mut ps)?;
     
     let hfont = HFONT::CreateFont(
-        SIZE::new(0, 100),
+        SIZE::new(0, MulDiv(72, hdc.GetDeviceCaps(co::GDC::LOGPIXELSY), 72)),
         0,
         0,
         co::FW::BOLD,
@@ -186,7 +186,7 @@ pub fn draw_reading(hwnd: HWND, reading: [&str; 2]) -> winsafe::AnyResult<()> {
     hfont.DeleteObject()?;
 
     let hfont = HFONT::CreateFont(
-        SIZE::new(0, 100),
+        SIZE::new(0, MulDiv(72, hdc.GetDeviceCaps(co::GDC::LOGPIXELSY), 72)),
         0,
         0,
         co::FW::DONTCARE,
