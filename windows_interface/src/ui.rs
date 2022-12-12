@@ -103,6 +103,7 @@ pub fn build_modal(parent: &impl GuiParent) -> gui::WindowModal {
     gui::WindowModal::new(
         parent,
         gui::WindowModalOpts {
+            size: SIZE::new(300, 150),
             ..Default::default()
         }
     )
@@ -211,6 +212,8 @@ pub fn text_not_connected(parent: &impl GuiParent) -> gui::Label {
         parent,
         gui::LabelOpts {
             text: "Connection unsuccessful.".to_owned(),
+            position: POINT::new(20, 20),
+            size: SIZE::new(260, 110),
             ..Default::default()
         }
     )
@@ -221,6 +224,8 @@ pub fn text_no_ports(parent: &impl GuiParent) -> gui::Label {
         parent,
         gui::LabelOpts {
             text: "No Arduinos found. Please insert an Arduino to use this tool.".to_owned(),
+            position: POINT::new(20, 20),
+            size: SIZE::new(260, 110),
             ..Default::default()
         }
     )
