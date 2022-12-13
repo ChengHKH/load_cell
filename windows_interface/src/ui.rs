@@ -46,7 +46,7 @@ fn build_logger_menu() -> winsafe::AnyResult<winsafe::HMENU> {
         winsafe::MenuEnum::Submenu(options_submenu, "&Options"),
     ])?;
 
-    Ok(logger_menu)    
+    Ok(logger_menu)
 }
 
 pub fn build_main() -> gui::WindowMain {
@@ -55,7 +55,7 @@ pub fn build_main() -> gui::WindowMain {
     gui::WindowMain::new(
         gui::WindowMainOpts {
             title: "Load Cell Reader".to_owned(),
-            // class_icon: gui::Icon::Id(101),
+            class_icon: gui::Icon::Id(101),
             size: SIZE::new(300, 150),
             menu,
             ..Default::default()
@@ -104,6 +104,7 @@ pub fn build_modal(parent: &impl GuiParent) -> gui::WindowModal {
     gui::WindowModal::new(
         parent,
         gui::WindowModalOpts {
+            class_icon: gui::Icon::Id(101),
             size: SIZE::new(300, 150),
             ..Default::default()
         }
