@@ -1,6 +1,6 @@
 use crate::ids;
 
-use winsafe::{prelude::*, co, gui, HWND, HFONT, POINT, SIZE, PAINTSTRUCT, MulDiv};
+use winsafe::{prelude::*, co, gui, task_dlg, HWND, HFONT, POINT, SIZE, PAINTSTRUCT, MulDiv};
 use serialport;
 
 pub fn build_logger() -> gui::WindowMain {
@@ -111,15 +111,6 @@ pub fn build_modal(parent: &impl GuiParent) -> gui::WindowModal {
     )
 }
 
-pub fn build_modal_error(parent: &impl GuiParent) -> gui::WindowModal {
-    gui::WindowModal::new(
-        parent,
-        gui::WindowModalOpts {
-            size: SIZE::new(300, 150),
-            ..Default::default()
-        }
-    )
-}
 
 pub fn build_modal_cancel(parent: &impl GuiParent, modal: &str, number: u8) -> gui::Button {
     gui::Button::new(
@@ -176,18 +167,25 @@ pub fn build_reader(parent: &impl GuiParent) -> gui::WindowControl {
     )
 }
 
-fn btn_position(modal: &str, number: u8) -> Option<POINT> {
-    match modal {
-        "input" => match number {
-            _ => None,
-        }
-        "error" => match number {
-            1 => Some(POINT::new(202, 117)),
-            2 => Some(POINT::new(94, 117)),
-            _ => None,
-        },
-        _ => None,
-    }
+pub fn dlg_not_connected(parent: &impl GuiParent) -> Option<serialport::Result<Box<dyn serialport::SerialPort>>> {
+    task_dlg::error(
+        parent.hwnd(),
+        "Error",
+        Some("Connection failed"),
+        "Please select an Arduino to connect to.",
+    ).unwrap();
+    None
+}
+
+pub fn dlg_no_ports(parent: &impl GuiParent) -> Option<serialport::Result<Box<dyn serialport::SerialPort>>> {
+    task_dlg::ok_cancel(
+        parent.hwnd(),
+        "Error",
+        Some("No Arduinos found"),
+        "Please insert an Arduino to use this tool.",
+        Some("OK"),
+    ).unwrap();
+    None
 }
 
 pub fn draw_reading(hwnd: HWND, reading: [&str; 2]) -> winsafe::AnyResult<()> {
@@ -246,16 +244,18 @@ pub fn text_not_connected(parent: &impl GuiParent) -> gui::Label {
     )
 }
 
-pub fn text_no_ports(parent: &impl GuiParent) -> gui::Label {
-    gui::Label::new(
-        parent,
-        gui::LabelOpts {
-            text: "No Arduinos found. Please insert an Arduino to use this tool.".to_owned(),
-            position: POINT::new(20, 20),
-            size: SIZE::new(260, 110),
-            ..Default::default()
+fn btn_position(modal: &str, number: u8) -> Option<POINT> {
+    match modal {
+        "input" => match number {
+            _ => None,
         }
-    )
+        "error" => match number {
+            1 => Some(POINT::new(202, 117)),
+            2 => Some(POINT::new(94, 117)),
+            _ => None,
+        },
+        _ => None,
+    }
 }
 
 // fn select_units(&check) -> SysResult<()> {
