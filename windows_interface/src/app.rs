@@ -29,14 +29,21 @@ impl App {
             let main_window = self.window.clone(); 
             move |_| {
                 let ports = get_ports();
+                
                 let port = match ports {
-                    Some(info) => open_port(&main_window, info),
-                    None => ui::dlg_no_ports(&main_window),
+                    Some(info) => DlgSelectPort::new(&main_window, info).show(),
+                    None => {ui::dlg_no_ports(&main_window);
+                        return Ok(0)
+                    },
                 };
-                match port {
-                    Some(p) => ,
-                    None => ,
-                }
+
+                let data = match port {
+                    Some(p) => open_port(p),
+                    None => {ui::dlg_not_connected(&main_window);
+                        return Ok(0);
+                    },
+                };
+                
                 Ok(0)
            }
         });
@@ -189,12 +196,8 @@ fn get_ports() -> Option<Vec<serialport::SerialPortInfo>> {
     }
 }
 
-fn open_port(parent: &impl GuiParent, info: Vec<SerialPortInfo>) -> Option<serialport::Result<Box<dyn serialport::SerialPort>>> {
-    let port = DlgSelectPort::new(parent, info).show();
-    match port {
-        Some(p) => Some(serialport::new(p.port_name, 115200).open()),
-        None => ui::dlg_not_connected(parent),
-    }
+fn open_port(info: SerialPortInfo) -> serialport::Result<Box<dyn serialport::SerialPort>> {
+        serialport::new(info.port_name, 115200).open()
 }
 
 #[cfg(tests)]

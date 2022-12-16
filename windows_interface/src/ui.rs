@@ -167,25 +167,22 @@ pub fn build_reader(parent: &impl GuiParent) -> gui::WindowControl {
     )
 }
 
-pub fn dlg_not_connected(parent: &impl GuiParent) -> Option<serialport::Result<Box<dyn serialport::SerialPort>>> {
+pub fn dlg_not_connected(parent: &impl GuiParent) -> () {
     task_dlg::error(
         parent.hwnd(),
         "Error",
         Some("Connection failed"),
         "Please select an Arduino to connect to.",
     ).unwrap();
-    None
 }
 
-pub fn dlg_no_ports(parent: &impl GuiParent) -> Option<serialport::Result<Box<dyn serialport::SerialPort>>> {
-    task_dlg::ok_cancel(
+pub fn dlg_no_ports(parent: &impl GuiParent) -> () {
+    task_dlg::error(
         parent.hwnd(),
         "Error",
         Some("No Arduinos found"),
         "Please insert an Arduino to use this tool.",
-        Some("OK"),
     ).unwrap();
-    None
 }
 
 pub fn draw_reading(hwnd: HWND, reading: [&str; 2]) -> winsafe::AnyResult<()> {
