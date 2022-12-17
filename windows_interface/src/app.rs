@@ -49,6 +49,7 @@ impl App {
         });
 
         self.window.on().wm_command_accel_menu(ids::FILE_NEW, {
+            let main_window = self.window.clone(); 
             move || {
                 let _logger = Logger::new().run()?;
                 Ok(())
@@ -70,10 +71,10 @@ struct DlgSelectPort {
 
 impl DlgSelectPort {
     pub fn new(parent: &impl GuiParent, ports: Vec<serialport::SerialPortInfo>) -> Self {
-        let window = ui::build_modal(parent);
-        let ports_list = ui::build_ports_list(&window, ports);
-        let btn_ok = ui::build_modal_ok(&window, "input", 2);
-        let btn_cancel = ui::build_modal_cancel(&window, "input", 1);
+        let window = ui::build_select_port(parent);
+        let ports_list = ui::build_select_port_list(&window, ports);
+        let btn_ok = ui::build_select_port_connect(&window, "input", 2);
+        let btn_cancel = ui::build_select_port_cancel(&window, "input", 1);
         
         let new_self = Self {
             window,
@@ -169,9 +170,9 @@ impl Reader {
 }
 
 fn get_reading<'a>() -> [&'a str; 2] {
-    let value = "1.23";
+    let value = "1234";
 
-    let unit = " kg";
+    let unit = " g";
 
     [value, unit]
 }

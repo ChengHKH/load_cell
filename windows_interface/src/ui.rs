@@ -1,3 +1,5 @@
+use std::default;
+
 use crate::ids;
 
 use winsafe::{prelude::*, co, gui, task_dlg, HWND, HFONT, POINT, SIZE, PAINTSTRUCT, MulDiv};
@@ -56,7 +58,7 @@ pub fn build_main() -> gui::WindowMain {
         gui::WindowMainOpts {
             title: "Load Cell Reader".to_owned(),
             class_icon: gui::Icon::Id(101),
-            size: SIZE::new(300, 150),
+            size: SIZE::new(360, 130),
             menu,
             ..Default::default()
         }
@@ -100,42 +102,55 @@ fn build_main_menu() -> winsafe::AnyResult<winsafe::HMENU> {
     Ok(main_menu)
 }
 
-pub fn build_modal(parent: &impl GuiParent) -> gui::WindowModal {
-    gui::WindowModal::new(
+pub fn build_reader(parent: &impl GuiParent) -> gui::WindowControl {
+    gui::WindowControl::new(
         parent,
-        gui::WindowModalOpts {
-            class_icon: gui::Icon::Id(101),
-            size: SIZE::new(300, 150),
+        gui::WindowControlOpts {
+            position: POINT::new(0, 0),
+            size: SIZE::new(360, 130),
             ..Default::default()
         }
     )
 }
 
+pub fn build_select_port(parent: &impl GuiParent) -> gui::WindowModal {
+    gui::WindowModal::new(
+        parent,
+        gui::WindowModalOpts {
+            title: "Select port".to_owned(),
+            size: SIZE::new(350, 150),
+            ..Default::default()
+        }
+    )
+}
 
-pub fn build_modal_cancel(parent: &impl GuiParent, modal: &str, number: u8) -> gui::Button {
+pub fn build_select_port_cancel(parent: &impl GuiParent, modal: &str, number: u8) -> gui::Button {
     gui::Button::new(
         parent,
         gui::ButtonOpts {
             text: "Cancel".to_owned(),
             position: btn_position(modal, number).unwrap(),
-            ..Default::default()
-        }
-    )
-}
-
-pub fn build_modal_ok(parent: &impl GuiParent, modal: &str, number: u8) -> gui::Button {
-    gui::Button::new(
-        parent,
-        gui::ButtonOpts {
-            text: "OK".to_owned(),
-            position: btn_position(modal, number).unwrap(),
+            width: 72,
             height: 23,
             ..Default::default()
         }
     )
 }
 
-pub fn build_ports_list(parent: &impl GuiParent, ports: Vec<serialport::SerialPortInfo>) -> gui::ComboBox {
+pub fn build_select_port_connect(parent: &impl GuiParent, modal: &str, number: u8) -> gui::Button {
+    gui::Button::new(
+        parent,
+        gui::ButtonOpts {
+            text: "Connect".to_owned(),
+            position: btn_position(modal, number).unwrap(),
+            width: 72,
+            height: 23,
+            ..Default::default()
+        }
+    )
+}
+
+pub fn build_select_port_list(parent: &impl GuiParent, ports: Vec<serialport::SerialPortInfo>) -> gui::ComboBox {
     let mut port_names = Vec::new();
     for port in ports {
         if let serialport::SerialPortType::UsbPort(i) = port.port_type {
@@ -156,12 +171,13 @@ pub fn build_ports_list(parent: &impl GuiParent, ports: Vec<serialport::SerialPo
     )
 }
 
-pub fn build_reader(parent: &impl GuiParent) -> gui::WindowControl {
-    gui::WindowControl::new(
+pub fn build_select_port_text(parent: &impl GuiParent) -> gui::Label {
+    gui::Label::new(
         parent,
-        gui::WindowControlOpts {
-            position: POINT::new(0, 0),
-            size: SIZE::new(300, 150),
+        gui::LabelOpts {
+            text: "Please select an Arduino to connect to.".to_owned(),
+            position: POINT::new(10, 10),
+            size: SIZE::new(330, 20),
             ..Default::default()
         }
     )
@@ -172,7 +188,7 @@ pub fn dlg_not_connected(parent: &impl GuiParent) -> () {
         parent.hwnd(),
         "Error",
         Some("Connection failed"),
-        "Please select an Arduino to connect to.",
+        "Please connect to Arduino to use this tool.",
     ).unwrap();
 }
 
@@ -190,7 +206,7 @@ pub fn draw_reading(hwnd: HWND, reading: [&str; 2]) -> winsafe::AnyResult<()> {
     let hdc = hwnd.BeginPaint(&mut ps)?;
     
     let hfont = HFONT::CreateFont(
-        SIZE::new(0, MulDiv(72, hdc.GetDeviceCaps(co::GDC::LOGPIXELSY), 72)),
+        SIZE::new(0, MulDiv(75, hdc.GetDeviceCaps(co::GDC::LOGPIXELSY), 72)),
         0,
         0,
         co::FW::BOLD,
@@ -208,7 +224,7 @@ pub fn draw_reading(hwnd: HWND, reading: [&str; 2]) -> winsafe::AnyResult<()> {
     hfont.DeleteObject()?;
 
     let hfont = HFONT::CreateFont(
-        SIZE::new(0, MulDiv(72, hdc.GetDeviceCaps(co::GDC::LOGPIXELSY), 72)),
+        SIZE::new(0, MulDiv(75, hdc.GetDeviceCaps(co::GDC::LOGPIXELSY), 72)),
         0,
         0,
         co::FW::DONTCARE,
@@ -229,26 +245,16 @@ pub fn draw_reading(hwnd: HWND, reading: [&str; 2]) -> winsafe::AnyResult<()> {
     Ok(())
 }
 
-pub fn text_not_connected(parent: &impl GuiParent) -> gui::Label {
-    gui::Label::new(
-        parent,
-        gui::LabelOpts {
-            text: "Connection unsuccessful.".to_owned(),
-            position: POINT::new(20, 20),
-            size: SIZE::new(260, 110),
-            ..Default::default()
-        }
-    )
-}
-
 fn btn_position(modal: &str, number: u8) -> Option<POINT> {
     match modal {
         "input" => match number {
+            1 => Some(POINT::new(269, 118)),
+            2 => Some(POINT::new(191, 118)),
             _ => None,
         }
         "error" => match number {
-            1 => Some(POINT::new(202, 117)),
-            2 => Some(POINT::new(94, 117)),
+            1 => Some(POINT::new(269, 118)),
+            2 => Some(POINT::new(191, 118)),
             _ => None,
         },
         _ => None,
