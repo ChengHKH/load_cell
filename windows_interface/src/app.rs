@@ -25,6 +25,7 @@ impl App {
     }
 
     fn events(&self) {
+        #[cfg(not(test))]
         self.window.on().wm_create({
             let main_window = self.window.clone(); 
             move |_| {
@@ -48,6 +49,17 @@ impl App {
                         return Ok(0);
                     },
                 };
+                
+                Ok(0)
+           }
+        });
+
+        #[cfg(test)]
+        self.window.on().wm_create({
+            let main_window = self.window.clone(); 
+            move |_| {
+                let names = vec!["Test".to_owned(), "Test".to_owned()];
+                DlgSelectPort::new(&main_window, names).show();
                 
                 Ok(0)
            }

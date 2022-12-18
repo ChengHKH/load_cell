@@ -18,3 +18,9 @@ fn run_app() -> AnyResult<i32> {
         .run()
         .map_err(|err| err.into())
 }
+
+#[cfg(test)]
+#[test]
+fn test() {
+    main()
+}
