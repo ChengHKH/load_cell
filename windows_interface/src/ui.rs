@@ -150,22 +150,11 @@ pub fn build_select_port_connect(parent: &impl GuiParent, modal: &str, number: u
     )
 }
 
-pub fn build_select_port_list(parent: &impl GuiParent, ports: Vec<serialport::SerialPortInfo>) -> gui::ComboBox {
-    let mut port_names = Vec::new();
-    for port in ports {
-        if let serialport::SerialPortType::UsbPort(i) = port.port_type {
-            let name = i.product.unwrap_or_else(
-                || i.manufacturer.unwrap_or_else(
-                    || String::from("Unknown")) + "USB");
-
-            port_names.push(name);
-        }
-    };
-
+pub fn build_select_port_list(parent: &impl GuiParent, names: Vec<String>) -> gui::ComboBox {
     gui::ComboBox::new(
         parent,
         gui::ComboBoxOpts {
-            items: port_names,
+            items: names,
             ..Default::default()
         }
     )
@@ -188,7 +177,7 @@ pub fn dlg_not_connected(parent: &impl GuiParent) -> () {
         parent.hwnd(),
         "Error",
         Some("Connection failed"),
-        "Please connect to Arduino to use this tool.",
+        "Please connect to an Arduino to use this tool.",
     ).unwrap();
 }
 

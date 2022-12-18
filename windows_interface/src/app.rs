@@ -31,15 +31,20 @@ impl App {
                 let ports = get_ports();
                 
                 let port = match ports {
-                    Some(info) => DlgSelectPort::new(&main_window, info).show(),
-                    None => {ui::dlg_no_ports(&main_window);
+                    Some(info) => {
+                        let names = get_port_names(info);
+                        DlgSelectPort::new(&main_window, names).show()
+                    },
+                    None => {
+                        ui::dlg_no_ports(&main_window);
                         return Ok(0)
                     },
                 };
 
                 let data = match port {
                     Some(p) => open_port(p),
-                    None => {ui::dlg_not_connected(&main_window);
+                    None => {
+                        ui::dlg_not_connected(&main_window);
                         return Ok(0);
                     },
                 };
@@ -70,9 +75,9 @@ struct DlgSelectPort {
 }
 
 impl DlgSelectPort {
-    pub fn new(parent: &impl GuiParent, ports: Vec<serialport::SerialPortInfo>) -> Self {
+    pub fn new(parent: &impl GuiParent, names: Vec<String>) -> Self {
         let window = ui::build_select_port(parent);
-        let ports_list = ui::build_select_port_list(&window, ports);
+        let ports_list = ui::build_select_port_list(&window, names);
         let btn_ok = ui::build_select_port_connect(&window, "input", 2);
         let btn_cancel = ui::build_select_port_cancel(&window, "input", 1);
         
@@ -197,11 +202,20 @@ fn get_ports() -> Option<Vec<serialport::SerialPortInfo>> {
     }
 }
 
-fn open_port(info: SerialPortInfo) -> serialport::Result<Box<dyn serialport::SerialPort>> {
-        serialport::new(info.port_name, 115200).open()
+fn get_port_names(info: Vec<SerialPortInfo>) -> Vec<String> {
+    let mut port_names = Vec::new();
+    for i in info {
+        if let serialport::SerialPortType::UsbPort(usb) = i.port_type {
+            let name = usb.product.unwrap_or_else(
+                || usb.manufacturer.unwrap_or_else(
+                    || String::from("Unknown")) + "USB");
+
+            port_names.push(name);
+        }
+    };
+    port_names
 }
 
-#[cfg(tests)]
-mod tests {
-    
+fn open_port(info: SerialPortInfo) -> serialport::Result<Box<dyn serialport::SerialPort>> {
+        serialport::new(info.port_name, 115200).open()
 }
