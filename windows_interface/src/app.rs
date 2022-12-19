@@ -1,6 +1,6 @@
 use std::{rc::Rc, cell::RefCell};
 
-use crate::{ids, ui};
+use crate::{ids, ui, main};
 
 use winsafe::{prelude::*, gui, co};
 use serialport::{SerialPortType, SerialPortInfo};
@@ -79,6 +79,8 @@ impl App {
 #[derive(Clone)]
 struct DlgSelectPort {
     window: gui::WindowModal,
+    main_instruction: gui::Label,
+    secondary_instruction: gui::Label,
     ports_list: gui::ComboBox,
     btn_ok: gui::Button,
     btn_cancel: gui::Button,
@@ -89,12 +91,16 @@ struct DlgSelectPort {
 impl DlgSelectPort {
     pub fn new(parent: &impl GuiParent, names: Vec<String>) -> Self {
         let window = ui::build_select_port(parent);
+        let main_instruction = ui::build_select_port_instruction_main(&window);
+        let secondary_instruction = ui::build_select_port_instruction_secondary(&window);
         let ports_list = ui::build_select_port_list(&window, names);
         let btn_ok = ui::build_select_port_connect(&window, "input", 2);
         let btn_cancel = ui::build_select_port_cancel(&window, "input", 1);
         
         let new_self = Self {
             window,
+            main_instruction,
+            secondary_instruction,
             ports_list,
             btn_ok,
             btn_cancel,
@@ -111,6 +117,21 @@ impl DlgSelectPort {
     }
 
     fn events(&self) {
+        self.window.on().wm_init_dialog({
+            let main_instruction = self.main_instruction.clone();
+            move |_| {
+                ui::draw_instruction_main_font(&main_instruction)?;
+                Ok(true)
+            }
+        });
+
+        self.window.on().wm_ctl_color_static({
+            let main_instruction = self.main_instruction.clone();
+            move |_| {
+                let color = ui::draw_instruction_main_color(&main_instruction)?;
+                Ok(color)
+            }
+        });
         // self.btn_ok.on().bn_clicked({
             
         // });

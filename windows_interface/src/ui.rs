@@ -2,7 +2,7 @@ use std::default;
 
 use crate::ids;
 
-use winsafe::{prelude::*, co, gui, task_dlg, HWND, HFONT, POINT, SIZE, PAINTSTRUCT, MulDiv};
+use winsafe::{prelude::*, co, gui, task_dlg, msg, HWND, HFONT, HBRUSH, POINT, SIZE, PAINTSTRUCT, MulDiv, AnyResult};
 use serialport;
 
 pub fn build_logger() -> gui::WindowMain {
@@ -150,23 +150,36 @@ pub fn build_select_port_connect(parent: &impl GuiParent, modal: &str, number: u
     )
 }
 
-pub fn build_select_port_list(parent: &impl GuiParent, names: Vec<String>) -> gui::ComboBox {
-    gui::ComboBox::new(
+pub fn build_select_port_instruction_main(parent: &impl GuiParent) -> gui::Label {
+    gui::Label::new(
         parent,
-        gui::ComboBoxOpts {
-            items: names,
+        gui::LabelOpts {
+            text: "Connect to an Arduino".to_owned(),
+            position: POINT::new(10, 10),
+            size: SIZE::new(330, 20),
             ..Default::default()
         }
     )
 }
 
-pub fn build_select_port_text(parent: &impl GuiParent) -> gui::Label {
+pub fn build_select_port_instruction_secondary(parent: &impl GuiParent) -> gui::Label {
     gui::Label::new(
         parent,
         gui::LabelOpts {
             text: "Please select an Arduino to connect to.".to_owned(),
-            position: POINT::new(10, 10),
+            position: POINT::new(10, 30),
             size: SIZE::new(330, 20),
+            ..Default::default()
+        }
+    )
+}
+
+pub fn build_select_port_list(parent: &impl GuiParent, names: Vec<String>) -> gui::ComboBox {
+    gui::ComboBox::new(
+        parent,
+        gui::ComboBoxOpts {
+            position: POINT::new(10, 50),
+            items: names,
             ..Default::default()
         }
     )
@@ -188,6 +201,39 @@ pub fn dlg_no_ports(parent: &impl GuiParent) -> () {
         Some("No Arduinos found"),
         "Please insert an Arduino to use this tool.",
     ).unwrap();
+}
+
+pub fn draw_instruction_main_color(instruction: &gui::Label) -> winsafe::SysResult<HBRUSH> {
+    let hwnd = instruction.hwnd();
+    let hdc = hwnd.GetDC()?;
+    hdc.SetTextColor(winsafe::COLORREF::new(0x00, 0x33, 0x99)).unwrap();
+    HBRUSH::GetSysColorBrush(co::COLOR::WINDOW)
+}
+
+pub fn draw_instruction_main_font(instruction: &gui::Label) -> AnyResult<()> {
+    let hwnd = instruction.hwnd();
+    let hdc = hwnd.GetDC()?;
+    let font = HFONT::CreateFont(
+        SIZE::new(0, MulDiv(12, hdc.GetDeviceCaps(co::GDC::LOGPIXELSY), 72)),
+        0,
+        0,
+        co::FW::DONTCARE,
+        false,
+        false,
+        false,
+        co::CHARSET::DEFAULT,
+        co::OUT_PRECIS::DEFAULT,
+        co::CLIP::DEFAULT_PRECIS,
+        co::QUALITY::DEFAULT,
+        co::PITCH::DEFAULT,
+        "Segoe UI")?;
+    hwnd.SendMessage(msg::wm::SetFont {
+        hfont: font,
+        redraw: true,
+    });
+    font.DeleteObject()?;
+    hwnd.ReleaseDC(hdc)?;
+    Ok(())
 }
 
 pub fn draw_reading(hwnd: HWND, reading: [&str; 2]) -> winsafe::AnyResult<()> {
