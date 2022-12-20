@@ -117,21 +117,22 @@ impl DlgSelectPort {
     }
 
     fn events(&self) {
-        self.window.on().wm_init_dialog({
+        self.window.on().wm_create({
             let main_instruction = self.main_instruction.clone();
             move |_| {
-                ui::draw_instruction_main_font(&main_instruction)?;
-                Ok(true)
+                let hwnd = main_instruction.hwnd();
+                ui::draw_instruction_main_font(hwnd)?;
+                Ok(0)
             }
         });
 
-        self.window.on().wm_ctl_color_static({
-            let main_instruction = self.main_instruction.clone();
-            move |_| {
-                let color = ui::draw_instruction_main_color(&main_instruction)?;
-                Ok(color)
-            }
-        });
+        // self.window.on().wm_ctl_color_static({
+        //     let main_instruction = self.main_instruction.clone();
+        //     move |_| {
+        //         let color = ui::draw_instruction_main_color(&main_instruction)?;
+        //         Ok(color)
+        //     }
+        // });
         // self.btn_ok.on().bn_clicked({
             
         // });

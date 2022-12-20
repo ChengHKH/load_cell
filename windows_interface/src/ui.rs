@@ -206,12 +206,11 @@ pub fn dlg_no_ports(parent: &impl GuiParent) -> () {
 pub fn draw_instruction_main_color(instruction: &gui::Label) -> winsafe::SysResult<HBRUSH> {
     let hwnd = instruction.hwnd();
     let hdc = hwnd.GetDC()?;
-    hdc.SetTextColor(winsafe::COLORREF::new(0x00, 0x33, 0x99)).unwrap();
+    hdc.SetTextColor(winsafe::COLORREF::new(0x00, 0x33, 0x99))?;
     HBRUSH::GetSysColorBrush(co::COLOR::WINDOW)
 }
 
-pub fn draw_instruction_main_font(instruction: &gui::Label) -> AnyResult<()> {
-    let hwnd = instruction.hwnd();
+pub fn draw_instruction_main_font(hwnd: HWND) -> AnyResult<()> {
     let hdc = hwnd.GetDC()?;
     let font = HFONT::CreateFont(
         SIZE::new(0, MulDiv(12, hdc.GetDeviceCaps(co::GDC::LOGPIXELSY), 72)),
