@@ -2,7 +2,7 @@ use std::{rc::Rc, cell::RefCell};
 
 use crate::{ids, ui, main};
 
-use winsafe::{prelude::*, gui, co};
+use winsafe::{prelude::*, gui, co, msg};
 use serialport::{SerialPortType, SerialPortInfo};
 
 #[derive(Clone)]
@@ -133,9 +133,19 @@ impl DlgSelectPort {
         //         Ok(color)
         //     }
         // });
+
         // self.btn_ok.on().bn_clicked({
             
         // });
+
+        self.window.on().wm_destroy({
+            let main_instruction = self.main_instruction.clone();
+            move || {
+                let font = main_instruction.hwnd().SendMessage(msg::wm::GetFont {}).unwrap();
+                font.DeleteObject()?;
+                Ok(())
+            }
+        });
     }
 }
 

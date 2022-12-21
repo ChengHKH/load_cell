@@ -207,11 +207,12 @@ pub fn draw_instruction_main_color(instruction: &gui::Label) -> winsafe::SysResu
     let hwnd = instruction.hwnd();
     let hdc = hwnd.GetDC()?;
     hdc.SetTextColor(winsafe::COLORREF::new(0x00, 0x33, 0x99))?;
+    hdc.SetBkMode(co::BKMODE::TRANSPARENT)?;
     HBRUSH::GetSysColorBrush(co::COLOR::WINDOW)
 }
 
 pub fn draw_instruction_main_font(hwnd: HWND) -> AnyResult<()> {
-    let hdc = hwnd.GetDC()?;
+    let hdc = hwnd.GetWindowDC()?;
     let font = HFONT::CreateFont(
         SIZE::new(0, MulDiv(12, hdc.GetDeviceCaps(co::GDC::LOGPIXELSY), 72)),
         0,
@@ -230,7 +231,6 @@ pub fn draw_instruction_main_font(hwnd: HWND) -> AnyResult<()> {
         hfont: font,
         redraw: true,
     });
-    font.DeleteObject()?;
     hwnd.ReleaseDC(hdc)?;
     Ok(())
 }
