@@ -154,9 +154,9 @@ pub fn build_select_port_instruction_main(parent: &impl GuiParent) -> gui::Label
     gui::Label::new(
         parent,
         gui::LabelOpts {
-            text: "Connect to an Arduino".to_owned(),
+            text: "Connect to an Arduino |".to_owned(),
             position: POINT::new(10, 10),
-            size: SIZE::new(330, 20),
+            size: SIZE::new(330, 30),
             ..Default::default()
         }
     )
@@ -167,7 +167,7 @@ pub fn build_select_port_instruction_secondary(parent: &impl GuiParent) -> gui::
         parent,
         gui::LabelOpts {
             text: "Please select an Arduino to connect to.".to_owned(),
-            position: POINT::new(10, 30),
+            position: POINT::new(10, 50),
             size: SIZE::new(330, 20),
             ..Default::default()
         }
@@ -198,7 +198,7 @@ pub fn dlg_no_ports(parent: &impl GuiParent) -> () {
     task_dlg::error(
         parent.hwnd(),
         "Error",
-        Some("No Arduinos found"),
+        Some("No Arduinos found |"),
         "Please insert an Arduino to use this tool.",
     ).unwrap();
 }
@@ -214,7 +214,7 @@ pub fn draw_instruction_main_color(instruction: &gui::Label) -> winsafe::SysResu
 pub fn draw_instruction_main_font(hwnd: HWND) -> AnyResult<()> {
     let hdc = hwnd.GetWindowDC()?;
     let font = HFONT::CreateFont(
-        SIZE::new(0, MulDiv(12, hdc.GetDeviceCaps(co::GDC::LOGPIXELSY), 72)),
+        SIZE::new(0, -MulDiv(12, hdc.GetDeviceCaps(co::GDC::LOGPIXELSY), 72)),
         0,
         0,
         co::FW::DONTCARE,
@@ -240,7 +240,7 @@ pub fn draw_reading(hwnd: HWND, reading: [&str; 2]) -> winsafe::AnyResult<()> {
     let hdc = hwnd.BeginPaint(&mut ps)?;
     
     let hfont = HFONT::CreateFont(
-        SIZE::new(0, MulDiv(75, hdc.GetDeviceCaps(co::GDC::LOGPIXELSY), 72)),
+        SIZE::new(0, -MulDiv(75, hdc.GetDeviceCaps(co::GDC::LOGPIXELSY), 72)),
         0,
         0,
         co::FW::BOLD,
@@ -258,7 +258,7 @@ pub fn draw_reading(hwnd: HWND, reading: [&str; 2]) -> winsafe::AnyResult<()> {
     hfont.DeleteObject()?;
 
     let hfont = HFONT::CreateFont(
-        SIZE::new(0, MulDiv(75, hdc.GetDeviceCaps(co::GDC::LOGPIXELSY), 72)),
+        SIZE::new(0, -MulDiv(75, hdc.GetDeviceCaps(co::GDC::LOGPIXELSY), 72)),
         0,
         0,
         co::FW::DONTCARE,
