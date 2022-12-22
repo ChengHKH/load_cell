@@ -2,7 +2,7 @@ use std::{rc::Rc, cell::RefCell};
 
 use crate::{ids, ui, main};
 
-use winsafe::{prelude::*, gui, co, msg};
+use winsafe::{prelude::*, gui, co, msg, HBRUSH};
 use serialport::{SerialPortType, SerialPortInfo};
 
 #[derive(Clone)]
@@ -126,13 +126,16 @@ impl DlgSelectPort {
             }
         });
 
-        // self.window.on().wm_ctl_color_static({
-        //     let main_instruction = self.main_instruction.clone();
-        //     move |_| {
-        //         let color = ui::draw_instruction_main_color(&main_instruction)?;
-        //         Ok(color)
-        //     }
-        // });
+        self.window.on().wm_ctl_color_static({
+            let main_instruction = self.main_instruction.clone();
+            move |m: msg::wm::CtlColorStatic| {
+                if m.hwnd == main_instruction.hwnd() {
+                    ui::draw_instruction_main_color(m.hdc)?;
+                }
+                let color = HBRUSH::GetSysColorBrush(co::COLOR::MENU)?;
+                Ok(color)
+            }
+        });
 
         // self.btn_ok.on().bn_clicked({
             

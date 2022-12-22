@@ -2,7 +2,7 @@ use std::default;
 
 use crate::ids;
 
-use winsafe::{prelude::*, co, gui, task_dlg, msg, HWND, HFONT, HBRUSH, POINT, SIZE, PAINTSTRUCT, MulDiv, AnyResult};
+use winsafe::{prelude::*, co, gui, task_dlg, msg, HWND, HFONT, HBRUSH, POINT, SIZE, PAINTSTRUCT, MulDiv, AnyResult, HDC};
 use serialport;
 
 pub fn build_logger() -> gui::WindowMain {
@@ -203,12 +203,10 @@ pub fn dlg_no_ports(parent: &impl GuiParent) -> () {
     ).unwrap();
 }
 
-pub fn draw_instruction_main_color(instruction: &gui::Label) -> winsafe::SysResult<HBRUSH> {
-    let hwnd = instruction.hwnd();
-    let hdc = hwnd.GetDC()?;
+pub fn draw_instruction_main_color(hdc: HDC) -> AnyResult<()> {
     hdc.SetTextColor(winsafe::COLORREF::new(0x00, 0x33, 0x99))?;
     hdc.SetBkMode(co::BKMODE::TRANSPARENT)?;
-    HBRUSH::GetSysColorBrush(co::COLOR::WINDOW)
+    Ok(())
 }
 
 pub fn draw_instruction_main_font(hwnd: HWND) -> AnyResult<()> {
