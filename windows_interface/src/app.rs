@@ -132,7 +132,8 @@ impl DlgSelectPort {
                 if m.hwnd == main_instruction.hwnd() {
                     ui::draw_instruction_main_color(m.hdc)?;
                 }
-                let color = HBRUSH::GetSysColorBrush(co::COLOR::MENU)?;
+                m.hdc.SetBkMode(co::BKMODE::TRANSPARENT)?;
+                let color = HBRUSH::GetSysColorBrush(co::COLOR::WINDOW)?;
                 Ok(color)
             }
         });

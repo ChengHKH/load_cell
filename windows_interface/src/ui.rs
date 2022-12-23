@@ -117,6 +117,7 @@ pub fn build_select_port(parent: &impl GuiParent) -> gui::WindowModal {
     gui::WindowModal::new(
         parent,
         gui::WindowModalOpts {
+            class_bg_brush: gui::Brush::Color(co::COLOR::WINDOW),
             title: "Select port".to_owned(),
             size: SIZE::new(350, 150),
             ..Default::default()
@@ -154,7 +155,7 @@ pub fn build_select_port_instruction_main(parent: &impl GuiParent) -> gui::Label
     gui::Label::new(
         parent,
         gui::LabelOpts {
-            text: "Connect to an Arduino |".to_owned(),
+            text: "Connect to an Arduino".to_owned(),
             position: POINT::new(10, 10),
             size: SIZE::new(330, 30),
             ..Default::default()
@@ -198,14 +199,13 @@ pub fn dlg_no_ports(parent: &impl GuiParent) -> () {
     task_dlg::error(
         parent.hwnd(),
         "Error",
-        Some("No Arduinos found |"),
+        Some("No Arduinos found"),
         "Please insert an Arduino to use this tool.",
     ).unwrap();
 }
 
 pub fn draw_instruction_main_color(hdc: HDC) -> AnyResult<()> {
     hdc.SetTextColor(winsafe::COLORREF::new(0x00, 0x33, 0x99))?;
-    hdc.SetBkMode(co::BKMODE::TRANSPARENT)?;
     Ok(())
 }
 
