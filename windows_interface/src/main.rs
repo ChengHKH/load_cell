@@ -1,11 +1,13 @@
 #![windows_subsystem = "windows"]
 
-pub mod app;
-pub mod ids;
-pub mod ui;
-
-use app::App;
 use winsafe::{prelude::*, co, AnyResult, HWND};
+
+mod wnd_main;
+mod dlg;
+mod reader;
+mod logger;
+
+use wnd_main::WndMain;
 
 fn main() {
     if let Err(e) = run_app() {
@@ -14,7 +16,7 @@ fn main() {
 }
 
 fn run_app() -> AnyResult<i32> {
-    App::new()
+    WndMain::new()
         .run()
         .map_err(|err| err.into())
 }
