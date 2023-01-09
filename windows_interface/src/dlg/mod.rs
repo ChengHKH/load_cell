@@ -20,49 +20,6 @@ pub fn dlg_no_ports(parent: &impl GuiParent) -> () {
     ).unwrap();
 }
 
-#[derive(Clone)]
-struct DlgSelectPort {
-    window: gui::WindowModal,
-    main_instruction: gui::Label,
-    secondary_instruction: gui::Label,
-    ports_list: gui::ComboBox,
-    btn_ok: gui::Button,
-    btn_cancel: gui::Button,
+pub fn dlg_select_port(parent: &impl GuiParent) -> DlgSelectPort {
     
-    return_value: Rc<RefCell<Option<serialport::SerialPortInfo>>>,
-}
-
-impl DlgSelectPort {
-    pub fn new(parent: &impl GuiParent, names: Vec<String>) -> Self {
-        let window = ui::build_select_port(parent);
-        let main_instruction = ui::build_select_port_instruction_main(&window);
-        let secondary_instruction = ui::build_select_port_instruction_secondary(&window);
-        let ports_list = ui::build_select_port_list(&window, names);
-        let btn_ok = ui::build_select_port_connect(&window, "input", 2);
-        let btn_cancel = ui::build_select_port_cancel(&window, "input", 1);
-        
-        let new_self = Self {
-            window,
-            main_instruction,
-            secondary_instruction,
-            ports_list,
-            btn_ok,
-            btn_cancel,
-            return_value: Rc::new(RefCell::new(None)),
-        };
-
-        new_self.events();
-        new_self
-    }
-
-    pub fn show(&self) -> Option<serialport::SerialPortInfo> {
-        self.window.show_modal();
-        self.return_value.borrow().as_ref().map(|info| info.clone())
-    }
-
-    fn events(&self) {
-        // self.btn_ok.on().bn_clicked({
-            
-        // });
-    }
 }
