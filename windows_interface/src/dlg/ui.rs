@@ -1,11 +1,13 @@
+use std::cell::RefCell;
+use std::rc::Rc;
 use winsafe::{prelude::*, co, gui, msg, HBRUSH, HFONT, POINT, SIZE, MulDiv};
 
 #[derive(Clone)]
 struct Buttons {
     window: gui::WindowControl,
-    button_one: Option<gui::Button>,
-    button_two: Option<gui::Button>,
-    button_three: Option<gui::Button>,
+    pub button_one: Option<gui::Button>,
+    pub button_two: Option<gui::Button>,
+    pub button_three: Option<gui::Button>,
 }
 
 impl Buttons {
@@ -97,7 +99,7 @@ struct Dlg {
     window: gui::WindowModal,
     main_instruction: gui::Label,
     secondary_instruction: gui::Label,
-    buttons: Buttons,
+    pub buttons: Buttons,
 }
 
 impl Dlg {
@@ -202,10 +204,10 @@ impl Dlg {
 
 #[derive(Clone)]
 pub struct DlgDropDown {
-    dialog: Dlg,
-    drop_down: gui::ComboBox,
+    pub dialog: Dlg,
+    pub drop_down: gui::ComboBox,
 
-    return_value: Rc<RefCell<Option<serialport::SerialPortInfo>>>,
+    pub return_value: Rc<RefCell<Option<serialport::SerialPortInfo>>>,
 }
 
 impl DlgDropDown {
@@ -251,11 +253,5 @@ impl DlgDropDown {
     pub fn show(&self) -> Option<serialport::SerialPortInfo> {
         self.dialog.window.show_modal();
         self.return_value.borrow().as_ref().map(|info| info.clone())
-    }
-
-    fn events(&self) {
-        // self.btn_ok.on().bn_clicked({
-            
-        // });
     }
 }

@@ -1,6 +1,7 @@
 use winsafe::{prelude::*, gui, co, msg, task_dlg, HBRUSH};
 
 mod custom_dlg;
+mod events;
 mod ui;
 
 pub fn dlg_not_connected(parent: &impl GuiParent) -> () {
