@@ -15,7 +15,7 @@ impl WndMain {
                 let port = match ports {
                     Some(info) => {
                         let names = funcs::get_port_names(info);
-                        dlg::dlg_select_port(parent);
+                        dlg::dlg_select_port(&main_window, names);
                     },
                     None => {
                         dlg::dlg_no_ports(&main_window);
@@ -40,8 +40,7 @@ impl WndMain {
             let main_window = self.window.clone(); 
             move |_| {
                 let names = vec!["Test".to_owned(), "Test".to_owned()];
-                dlg::dlg_select_port(parent);
-                
+                dlg::dlg_select_port(&main_window, names);
                 Ok(0)
            }
         });

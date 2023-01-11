@@ -93,29 +93,29 @@ impl Buttons {
 }
 
 #[derive(Clone)]
-struct CustomDlg {
+struct Dlg {
     window: gui::WindowModal,
     main_instruction: gui::Label,
     secondary_instruction: gui::Label,
     buttons: Buttons,
 }
 
-impl CustomDlg {
-    pub fn new(
+impl Dlg {
+    fn new(
         parent: &impl GuiParent,
-        title_text: &str,
-        main_instruction_text: &str,
-        secondary_instruction_text: &str,
+        title: &str,
+        header: &str,
+        body: &str,
         button_text_one: Option<&str>,
         button_text_two: Option<&str>,
         button_text_three: Option<&str>,
         size: SIZE,
-    ) -> CustomDlg {
+    ) -> Dlg {
         let window = gui::WindowModal::new(
             parent,
             gui::WindowModalOpts {
                 class_bg_brush: gui::Brush::Color(co::COLOR::WINDOW),
-                title: title_text.to_owned(),
+                title: title.to_owned(),
                 size,
                 ..Default::default()
             }
@@ -124,7 +124,7 @@ impl CustomDlg {
         let main_instruction = gui::Label::new(
             &window,
             gui::LabelOpts {
-                text: main_instruction_text.to_owned(),
+                text: header.to_owned(),
                 position: POINT::new(10, 10),
                 size: SIZE::new(330, 30),
                 ..Default::default()
@@ -134,7 +134,7 @@ impl CustomDlg {
         let secondary_instruction = gui::Label::new(
             &window,
             gui::LabelOpts {
-                text: secondary_instruction_text.to_owned(),
+                text: body.to_owned(),
                 position: POINT::new(10, 50),
                 size: SIZE::new(330, 20),
                 ..Default::default()
@@ -143,7 +143,7 @@ impl CustomDlg {
     
         let buttons = Buttons::new(&window, size, button_text_one, button_text_two, button_text_three);
     
-        let new_self = CustomDlg {window, main_instruction, secondary_instruction, buttons};
+        let new_self = Dlg {window, main_instruction, secondary_instruction, buttons};
         new_self.font();
         new_self
     }
@@ -201,16 +201,42 @@ impl CustomDlg {
 }
 
 #[derive(Clone)]
-struct DlgDropDown {
-    dialog: CustomDlg,
-    ports_list: gui::ComboBox,
+pub struct DlgDropDown {
+    dialog: Dlg,
+    drop_down: gui::ComboBox,
 
     return_value: Rc<RefCell<Option<serialport::SerialPortInfo>>>,
 }
 
 impl DlgDropDown {
-    pub fn new(parent: &impl GuiParent, list: Vec<String>) -> Self {
-        let drop_down = self.build_drop_down(&parent, list);
+    pub fn new(
+        parent: &impl GuiParent,
+        title: &str,
+        header: &str,
+        body: &str,
+        list: Vec<String>,
+        button_text_one: Option<&str>,
+        button_text_two: Option<&str>,
+    ) -> DlgDropDown {
+        let dialog = Dlg::new(
+            parent,
+            title,
+            header,
+            body,
+            button_text_one,
+            button_text_two,
+            None,
+            SIZE::new(350, 150)
+        );
+
+        let drop_down = gui::ComboBox::new(
+            &dialog.window,
+            gui::ComboBoxOpts {
+                position: POINT::new(10, 50),
+                items: list,
+                ..Default::default()
+            }
+        );
         
         let new_self = DlgDropDown {
             dialog,
@@ -223,7 +249,7 @@ impl DlgDropDown {
     }
 
     pub fn show(&self) -> Option<serialport::SerialPortInfo> {
-        self.window.show_modal();
+        self.dialog.window.show_modal();
         self.return_value.borrow().as_ref().map(|info| info.clone())
     }
 
@@ -231,16 +257,5 @@ impl DlgDropDown {
         // self.btn_ok.on().bn_clicked({
             
         // });
-    }
-
-    fn build_drop_down(&self, parent: &impl GuiParent, names: Vec<String>) -> gui::ComboBox {
-        gui::ComboBox::new(
-            parent,
-            gui::ComboBoxOpts {
-                position: POINT::new(10, 50),
-                items: names,
-                ..Default::default()
-            }
-        )
     }
 }

@@ -1,5 +1,6 @@
 use winsafe::{prelude::*, gui, co, msg, task_dlg, HBRUSH};
 
+mod custom_dlg;
 mod ui;
 
 pub fn dlg_not_connected(parent: &impl GuiParent) -> () {
@@ -20,6 +21,14 @@ pub fn dlg_no_ports(parent: &impl GuiParent) -> () {
     ).unwrap();
 }
 
-pub fn dlg_select_port(parent: &impl GuiParent) -> DlgSelectPort {
-    
+pub fn dlg_select_port(parent: &impl GuiParent, list: Vec<String>) -> Option<serialport::SerialPortInfo> {
+    custom_dlg::drop_down(
+        parent,
+        "Connect to Arduino",
+        "Connect to Arduino",
+        "Please select an Arduino to connect to.",
+        list,
+        Some("Connect"),
+        Some("Cancel"),
+    )
 }
