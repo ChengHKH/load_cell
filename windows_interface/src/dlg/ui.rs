@@ -218,7 +218,6 @@ impl DlgDropDown {
         body: &str,
         list: Vec<String>,
         button_text_one: Option<&str>,
-        button_text_two: Option<&str>,
     ) -> DlgDropDown {
         let dialog = Dlg::new(
             parent,
@@ -226,7 +225,7 @@ impl DlgDropDown {
             header,
             body,
             button_text_one,
-            button_text_two,
+            Some("Cancel"),
             None,
             SIZE::new(350, 150)
         );

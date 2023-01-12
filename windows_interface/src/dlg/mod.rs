@@ -30,6 +30,5 @@ pub fn dlg_select_port(parent: &impl GuiParent, list: Vec<String>) -> Option<Str
         "Please select an Arduino to connect to.",
         list,
         Some("Connect"),
-        Some("Cancel"),
     )
 }

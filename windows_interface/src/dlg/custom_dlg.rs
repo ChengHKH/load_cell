@@ -9,7 +9,6 @@ pub fn drop_down(
     body: &str,
     list: Vec<String>,
     button_text_one: Option<&str>,
-    button_text_two: Option<&str>,
 ) -> Option<String> {
     ui::DlgDropDown::new(
         parent,
@@ -18,6 +17,5 @@ pub fn drop_down(
         body,
         list,
         button_text_one,
-        button_text_two,
     ).show()
 }
