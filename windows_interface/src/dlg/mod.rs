@@ -22,7 +22,7 @@ pub fn dlg_no_ports(parent: &impl GuiParent) -> () {
     ).unwrap();
 }
 
-pub fn dlg_select_port(parent: &impl GuiParent, list: Vec<String>) -> Option<serialport::SerialPortInfo> {
+pub fn dlg_select_port(parent: &impl GuiParent, list: Vec<String>) -> Option<String> {
     custom_dlg::drop_down(
         parent,
         "Connect to Arduino",

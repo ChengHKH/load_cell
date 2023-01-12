@@ -207,7 +207,7 @@ pub struct DlgDropDown {
     pub dialog: Dlg,
     pub drop_down: gui::ComboBox,
 
-    pub return_value: Rc<RefCell<Option<serialport::SerialPortInfo>>>,
+    pub return_value: Rc<RefCell<Option<String>>>,
 }
 
 impl DlgDropDown {
@@ -250,8 +250,8 @@ impl DlgDropDown {
         new_self
     }
 
-    pub fn show(&self) -> Option<serialport::SerialPortInfo> {
+    pub fn show(&self) -> Option<String> {
         self.dialog.window.show_modal();
-        self.return_value.borrow().as_ref().map(|info| info.clone())
+        self.return_value.borrow().as_ref().map(|s| s.clone())
     }
 }

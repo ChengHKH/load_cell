@@ -10,7 +10,7 @@ pub fn drop_down(
     list: Vec<String>,
     button_text_one: Option<&str>,
     button_text_two: Option<&str>,
-) -> Option<serialport::SerialPortInfo> {
+) -> Option<String> {
     ui::DlgDropDown::new(
         parent,
         title,

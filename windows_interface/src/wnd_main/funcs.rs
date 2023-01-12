@@ -1,4 +1,5 @@
-use serialport::{SerialPortType, SerialPortInfo};
+use std::collections::HashMap;
+use serialport::{SerialPort, SerialPortType, SerialPortInfo};
 
 fn get_reading<'a>() -> [&'a str; 2] {
     let value = "1234";
@@ -8,7 +9,7 @@ fn get_reading<'a>() -> [&'a str; 2] {
     [value, unit]
 }
 
-pub fn get_ports() -> Option<Vec<serialport::SerialPortInfo>> {
+pub fn get_ports() -> Option<Vec<SerialPortInfo>> {
     println!("Finding serial ports...");
     let ports = serialport::available_ports().expect("No ports found!");
     let mut arduino_ports = Vec::new();
@@ -28,20 +29,22 @@ pub fn get_ports() -> Option<Vec<serialport::SerialPortInfo>> {
     }
 }
 
-pub fn get_port_names(info: Vec<SerialPortInfo>) -> Vec<String> {
-    let mut port_names = Vec::new();
+pub fn get_port_names(info: Vec<SerialPortInfo>) -> (Vec<String>, HashMap<String, String>) {
+    let mut usb_names = Vec::new();
+    let mut port_map = HashMap::new();
     for i in info {
-        if let serialport::SerialPortType::UsbPort(usb) = i.port_type {
+        if let SerialPortType::UsbPort(usb) = i.port_type {
             let name = usb.product.unwrap_or_else(
                 || usb.manufacturer.unwrap_or_else(
                     || String::from("Unknown")) + "USB");
 
-            port_names.push(name);
+            usb_names.push(name);
+            port_map.insert(name, i.port_name);
         }
     };
-    port_names
+    (usb_names, port_map)
 }
 
-pub fn open_port(info: SerialPortInfo) -> serialport::Result<Box<dyn serialport::SerialPort>> {
-        serialport::new(info.port_name, 115200).open()
+pub fn open_port(port_name: String) -> serialport::Result<Box<dyn SerialPort>> {
+        serialport::new(port_name, 115200).open()
 }
