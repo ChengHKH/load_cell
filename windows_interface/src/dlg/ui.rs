@@ -96,7 +96,7 @@ impl Buttons {
 
 #[derive(Clone)]
 struct Dlg {
-    window: gui::WindowModal,
+    pub window: gui::WindowModal,
     main_instruction: gui::Label,
     secondary_instruction: gui::Label,
     pub buttons: Buttons,
