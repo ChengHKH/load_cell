@@ -1,26 +1,17 @@
 use winsafe::{prelude::*, gui, co, msg};
 
-mod events;
 mod ui;
+mod events;
 
 #[derive(Clone)]
 pub struct Logger {
-    window: gui::WindowMain,
+    window: gui::WindowControl,
 }
 
 impl Logger {
-    pub fn new() -> Self {
-        let window = ui::build_logger();
-        let new_self = Self {window};
+    pub fn new(parent: &impl GuiParent) -> Logger {
+        let new_self = ui::build(parent);
         new_self.events();
         new_self
-    }
-
-    pub fn run(&self) -> gui::MsgResult<i32> {
-        self.window.run_main(None)
-    }
-
-    fn events(&self) {
-
     }
 }

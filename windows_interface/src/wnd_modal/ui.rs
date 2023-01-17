@@ -13,7 +13,7 @@ pub(super) fn build(parent: &impl GuiParent) -> WndModal {
         }
     );
 
-    let logger = Logger::new();
+    let logger = Logger::new(&window);
 
     WndModal {window, logger}
 }
