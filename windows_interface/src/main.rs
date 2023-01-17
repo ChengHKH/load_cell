@@ -3,6 +3,7 @@
 use winsafe::{prelude::*, co, AnyResult, HWND};
 
 mod wnd_main;
+mod wnd_modal;
 mod dlg;
 mod reader;
 mod logger;

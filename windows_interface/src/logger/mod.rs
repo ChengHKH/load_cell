@@ -1,11 +1,10 @@
 use winsafe::{prelude::*, gui, co, msg};
 
 mod events;
-mod ids;
 mod ui;
 
 #[derive(Clone)]
-struct Logger {
+pub struct Logger {
     window: gui::WindowMain,
 }
 

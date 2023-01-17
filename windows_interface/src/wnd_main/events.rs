@@ -1,6 +1,7 @@
 use winsafe::{prelude::*,};
 
 use crate::dlg;
+use crate::wnd_modal::WndModal;
 
 use super::{WndMain, ids, funcs};
 
@@ -49,7 +50,7 @@ impl WndMain {
         self.window.on().wm_command_accel_menu(ids::FILE_NEW, {
             let main_window = self.window.clone(); 
             move || {
-                let _logger = Logger::new().run()?;
+                let logger = WndModal::new(&main_window);
                 Ok(())
             }
         });
