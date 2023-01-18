@@ -94,8 +94,16 @@ impl Buttons {
     }
 }
 
-trait Dlg {
-    fn build(
+#[derive(Clone)]
+struct Dlg {
+    pub window: gui::WindowModal,
+    main_instruction: gui::Label,
+    secondary_instruction: gui::Label,
+    buttons: Buttons,
+}
+
+impl Dlg {
+    fn new(
         parent: &impl GuiParent,
         title: &str,
         header: &str,
@@ -104,7 +112,7 @@ trait Dlg {
         button_text_two: Option<&str>,
         button_text_three: Option<&str>,
         size: SIZE,
-    ) -> (gui::WindowModal, gui::Label, gui::Label, Buttons) {
+    ) -> Dlg {
         let window = gui::WindowModal::new(
             parent,
             gui::WindowModalOpts {
@@ -136,8 +144,10 @@ trait Dlg {
         );
     
         let buttons = Buttons::new(&window, size, button_text_one, button_text_two, button_text_three);
-    
-        (window, main_instruction, secondary_instruction, buttons)
+        
+        let new_self = Dlg {window, main_instruction, secondary_instruction, buttons};
+        new_self.font();
+        new_self
     }
 
     fn font(&self) {
@@ -190,20 +200,20 @@ trait Dlg {
             }
         });
     }
+
+    fn build(&self) -> (gui::WindowModal, Buttons) {
+            (self.window, self.buttons)
+    }
 }
 
 #[derive(Clone)]
 pub struct DlgDropDown {
     pub window: gui::WindowModal,
-    main_instruction: gui::Label,
-    secondary_instruction: gui::Label,
     pub buttons: Buttons,
     pub drop_down: gui::ComboBox,
 
     pub return_value: Rc<RefCell<Option<String>>>,
 }
-
-impl Dlg for DlgDropDown {}
 
 impl DlgDropDown {
     pub fn new(
@@ -214,7 +224,7 @@ impl DlgDropDown {
         list: Vec<String>,
         button_text_one: Option<&str>,
     ) -> DlgDropDown {
-        let (window, main_instruction, secondary_instruction, buttons) = Dlg::build(
+        let (window, buttons) = Dlg::new(
             parent,
             title,
             header,
@@ -223,7 +233,7 @@ impl DlgDropDown {
             Some("Cancel"),
             None,
             SIZE::new(350, 150)
-        );
+        ).build();
 
         let drop_down = gui::ComboBox::new(
             &window,
@@ -236,8 +246,6 @@ impl DlgDropDown {
         
         let new_self = DlgDropDown {
             window,
-            main_instruction,
-            secondary_instruction,
             buttons,
             drop_down,
             return_value: Rc::new(RefCell::new(None)),
