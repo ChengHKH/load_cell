@@ -3,7 +3,7 @@ use std::rc::Rc;
 use winsafe::{prelude::*, co, gui, msg, HBRUSH, HFONT, POINT, SIZE, MulDiv};
 
 #[derive(Clone)]
-struct Buttons {
+pub struct Buttons {
     window: gui::WindowControl,
     pub button_one: Option<gui::Button>,
     pub button_two: Option<gui::Button>,
@@ -18,7 +18,7 @@ impl Buttons {
         text_two: Option<&str>,
         text_three: Option<&str>
     ) -> Buttons {
-        let position = [size.cx - 81, size.cx - 159, size.cx - 237].into_iter();
+        let mut position = [size.cx - 81, size.cx - 159, size.cx - 237].into_iter();
 
         let window = gui::WindowControl::new(
             parent,
@@ -201,7 +201,7 @@ impl Dlg {
         });
     }
 
-    fn build(&self) -> (gui::WindowModal, Buttons) {
+    fn build(self) -> (gui::WindowModal, Buttons) {
             (self.window, self.buttons)
     }
 }
