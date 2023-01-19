@@ -30,7 +30,7 @@ impl Buttons {
             }
         );
 
-        let button_three = match text_one {
+        let button_three = match text_three {
             Some(text) => {
                 Some(gui::Button::new(
                     parent,
@@ -46,7 +46,7 @@ impl Buttons {
             None => None,
         };
 
-        let button_two = match text_one {
+        let button_two = match text_two {
             Some(text) => {
                 Some(gui::Button::new(
                     parent,
