@@ -38,7 +38,7 @@ pub fn get_port_names(info: Vec<SerialPortInfo>) -> (Vec<String>, HashMap<String
                 || usb.manufacturer.unwrap_or_else(
                     || String::from("Unknown")) + "USB");
 
-            usb_names.push(name);
+            usb_names.push(name.clone());
             port_map.insert(name, i.port_name);
         }
     };
