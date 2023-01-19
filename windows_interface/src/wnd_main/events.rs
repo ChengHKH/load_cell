@@ -16,8 +16,11 @@ impl WndMain {
                 let port = match ports {
                     Some(info) => {
                         let (names, mut port_map) = funcs::get_port_names(info);
-                        let selection = dlg::dlg_select_port(&main_window, names).unwrap();
-                        port_map.remove(&selection)
+                        let selection = dlg::dlg_select_port(&main_window, names);
+                        match selection {
+                            Some(s) => port_map.remove(&s),
+                            None => None,
+                        }
                     },
                     None => {
                         dlg::dlg_no_ports(&main_window);
