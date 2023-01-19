@@ -2,7 +2,7 @@ use winsafe::prelude::*;
 
 use super::Logger;
 
-impl Reader {
+impl Logger {
     pub(super) fn events(&self) {
     
     }
