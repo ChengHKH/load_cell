@@ -1,6 +1,6 @@
 use winsafe::{prelude::*, co};
 
-use super::{Reader, ui};
+use super::{Reader, ui, funcs};
 
 impl Reader {
     pub(super) fn events(&self) {
@@ -15,7 +15,7 @@ impl Reader {
         self.window.on().wm_paint({
             let reader_window = self.window.clone();
             move || {
-                ui::draw_reading(reader_window.hwnd(), get_reading())?;
+                ui::draw_reading(reader_window.hwnd(), funcs::get_reading())?;
                 Ok(())
             }
         });

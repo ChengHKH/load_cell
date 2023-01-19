@@ -1,7 +1,8 @@
 use winsafe::{prelude::*, gui};
 
-mod ui;
 mod events;
+mod funcs;
+mod ui;
 
 #[derive(Clone)]
 pub struct Reader {
