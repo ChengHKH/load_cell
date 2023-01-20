@@ -4,9 +4,7 @@ use super::ui;
 
 impl ui::DlgDropDown {
     pub fn events(&self) {
-        let buttons = self.buttons.clone();
-
-        buttons.button_one.unwrap().on().bn_clicked({
+        self.connect_button.on().bn_clicked({
             let self2 = self.clone();
             move || {
                 *self2.return_value.try_borrow_mut()? = Some(self2.drop_down.text());
@@ -15,7 +13,7 @@ impl ui::DlgDropDown {
             }
         });
 
-        buttons.button_two.unwrap().on().bn_clicked({
+        self.cancel_button.on().bn_clicked({
             let self2 = self.clone();
             move || {
                 *self2.return_value.try_borrow_mut()? = None;

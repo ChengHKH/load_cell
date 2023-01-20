@@ -209,7 +209,8 @@ impl Dlg {
 #[derive(Clone)]
 pub struct DlgDropDown {
     pub window: gui::WindowModal,
-    pub buttons: Buttons,
+    pub connect_button: gui::Button,
+    pub cancel_button: gui::Button,
     pub drop_down: gui::ComboBox,
 
     pub return_value: Rc<RefCell<Option<String>>>,
@@ -235,6 +236,9 @@ impl DlgDropDown {
             SIZE::new(350, 150)
         ).build();
 
+        let connect_button = buttons.button_one.to_owned().unwrap();
+        let cancel_button = buttons.button_two.to_owned().unwrap();
+
         let drop_down = gui::ComboBox::new(
             &window,
             gui::ComboBoxOpts {
@@ -246,7 +250,8 @@ impl DlgDropDown {
         
         let new_self = DlgDropDown {
             window,
-            buttons,
+            connect_button,
+            cancel_button,
             drop_down,
             return_value: Rc::new(RefCell::new(None)),
         };
