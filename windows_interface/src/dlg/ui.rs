@@ -33,10 +33,10 @@ impl Buttons {
         let button_three = match text_three {
             Some(text) => {
                 Some(gui::Button::new(
-                    parent,
+                    &window,
                     gui::ButtonOpts {
                         text: text_three.unwrap().to_owned(),
-                        position: POINT::new(position.next().unwrap(), 118),
+                        position: POINT::new(position.next().unwrap(), 9),
                         width: 72,
                         height: 23,
                         ..Default::default()
@@ -49,10 +49,10 @@ impl Buttons {
         let button_two = match text_two {
             Some(text) => {
                 Some(gui::Button::new(
-                    parent,
+                    &window,
                     gui::ButtonOpts {
                         text: text_two.unwrap().to_owned(),
-                        position: POINT::new(position.next().unwrap(), 118),
+                        position: POINT::new(position.next().unwrap(), 9),
                         width: 72,
                         height: 23,
                         ..Default::default()
@@ -65,10 +65,10 @@ impl Buttons {
         let button_one = match text_one {
             Some(text) => {
                 Some(gui::Button::new(
-                    parent,
+                    &window,
                     gui::ButtonOpts {
                         text: text_one.unwrap().to_owned(),
-                        position: POINT::new(position.next().unwrap(), size.cy - 32),
+                        position: POINT::new(position.next().unwrap(), 9),
                         width: 72,
                         height: 23,
                         ..Default::default()
@@ -77,10 +77,10 @@ impl Buttons {
             },
             None => {
                 Some(gui::Button::new(
-                    parent,
+                    &window,
                     gui::ButtonOpts {
                         text: "OK".to_owned(),
-                        position: POINT::new(position.next().unwrap(), size.cy - 32),
+                        position: POINT::new(position.next().unwrap(), 9),
                         width: 72,
                         height: 23,
                         ..Default::default()
@@ -233,7 +233,7 @@ impl DlgDropDown {
             button_text_one,
             Some("Cancel"),
             None,
-            SIZE::new(350, 150)
+            SIZE::new(360, 130)
         ).build();
 
         let connect_button = buttons.button_one.unwrap();
