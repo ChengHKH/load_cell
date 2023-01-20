@@ -236,8 +236,8 @@ impl DlgDropDown {
             SIZE::new(350, 150)
         ).build();
 
-        let connect_button = buttons.button_one.to_owned().unwrap();
-        let cancel_button = buttons.button_two.to_owned().unwrap();
+        let connect_button = buttons.button_one.unwrap();
+        let cancel_button = buttons.button_two.unwrap();
 
         let drop_down = gui::ComboBox::new(
             &window,
