@@ -25,7 +25,7 @@ impl Reader {
             move || {
                 reader_window.hwnd().RedrawWindow(
                     &reader_window.hwnd().GetClientRect()?,
-                    Handle::NULL,
+                    &Handle::NULL,
                     co::RDW::INVALIDATE | co::RDW::UPDATENOW,
                 )?;
                 Ok(())

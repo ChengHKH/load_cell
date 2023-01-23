@@ -137,7 +137,7 @@ impl Dlg {
             &window,
             gui::LabelOpts {
                 text: body.to_owned(),
-                position: POINT::new(10, 50),
+                position: POINT::new(10, 40),
                 size: SIZE::new(330, 20),
                 ..Default::default()
             }
@@ -174,7 +174,6 @@ impl Dlg {
                     hfont: font,
                     redraw: true,
                 });
-                hwnd.ReleaseDC(hdc)?;
                 Ok(0)
             }
         });
@@ -182,7 +181,7 @@ impl Dlg {
         self.window.on().wm_ctl_color_static({
             let main_instruction = self.main_instruction.clone();
             move |m: msg::wm::CtlColorStatic| {
-                if m.hwnd == main_instruction.hwnd() {
+                if &m.hwnd == main_instruction.hwnd() {
                     m.hdc.SetTextColor(winsafe::COLORREF::new(0x00, 0x33, 0x99))?;
                 }
                 m.hdc.SetBkMode(co::BKMODE::TRANSPARENT)?;
@@ -242,7 +241,7 @@ impl DlgDropDown {
         let drop_down = gui::ComboBox::new(
             &window,
             gui::ComboBoxOpts {
-                position: POINT::new(10, 50),
+                position: POINT::new(10, 60),
                 items: list,
                 ..Default::default()
             }

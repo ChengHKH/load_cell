@@ -1,4 +1,4 @@
-use winsafe::{prelude::*, co, gui, SIZE, POINT, HWND, HFONT, MulDiv, PAINTSTRUCT};
+use winsafe::{prelude::*, co, gui, SIZE, POINT, HWND, HFONT, MulDiv};
 
 use super::Reader;
 
@@ -15,9 +15,8 @@ pub(super) fn build(parent: &impl GuiParent) -> Reader {
     Reader {window}
 }
 
-pub(super) fn draw_reading(hwnd: HWND, reading: [&str; 2]) -> winsafe::AnyResult<()> {
-    let mut ps = PAINTSTRUCT::default();
-    let hdc = hwnd.BeginPaint(&mut ps)?;
+pub(super) fn draw_reading(hwnd: &HWND, reading: [&str; 2]) -> winsafe::AnyResult<()> {
+    let hdc = hwnd.BeginPaint()?;
     
     let hfont = HFONT::CreateFont(
         SIZE::new(0, -MulDiv(75, hdc.GetDeviceCaps(co::GDC::LOGPIXELSY), 72)),
@@ -33,7 +32,7 @@ pub(super) fn draw_reading(hwnd: HWND, reading: [&str; 2]) -> winsafe::AnyResult
         co::QUALITY::DEFAULT,
         co::PITCH::DEFAULT,
         "Consolas")?;
-    hdc.SelectObjectFont(hfont)?;
+    hdc.SelectObject(&hfont)?;
     hdc.TextOut(10, 10, reading[0])?;
     hfont.DeleteObject()?;
 
@@ -51,10 +50,9 @@ pub(super) fn draw_reading(hwnd: HWND, reading: [&str; 2]) -> winsafe::AnyResult
         co::QUALITY::DEFAULT,
         co::PITCH::DEFAULT,
         "Consolas")?;
-    hdc.SelectObjectFont(hfont)?;
+    hdc.SelectObject(&hfont)?;
     hdc.TextOut(10 + hdc.GetTextExtentPoint32(reading[0])?.cx, 10, reading[1])?;
     hfont.DeleteObject()?;
 
-    hwnd.EndPaint(&ps);
     Ok(())
 }

@@ -51,8 +51,8 @@ fn build_main_menu() -> winsafe::AnyResult<winsafe::HMENU> {
     let main_menu = winsafe::HMENU::CreateMenu()?;
 
     main_menu.AppendMenuEnum(&[
-        winsafe::MenuEnum::Submenu(file_submenu, "&File"),
-        winsafe::MenuEnum::Submenu(options_submenu, "&Options"),
+        winsafe::MenuEnum::Submenu(&file_submenu, "&File"),
+        winsafe::MenuEnum::Submenu(&options_submenu, "&Options"),
     ])?;
 
     Ok(main_menu)
