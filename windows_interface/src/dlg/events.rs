@@ -1,4 +1,4 @@
-use winsafe::{prelude::*, co};
+use winsafe::{prelude::*, co, msg};
 
 use super::ui;
 
@@ -8,7 +8,7 @@ impl ui::DlgDropDown {
             let self2 = self.clone();
             move || {
                 *self2.return_value.try_borrow_mut()? = Some(self2.drop_down.text());
-                self2.window.hwnd().EndDialog(0)?;
+                self2.window.hwnd().SendMessage(msg::wm::Close {});
                 Ok(())
             }
         });
@@ -17,7 +17,7 @@ impl ui::DlgDropDown {
             let self2 = self.clone();
             move || {
                 *self2.return_value.try_borrow_mut()? = None;
-                self2.window.hwnd().EndDialog(0)?;
+                self2.window.hwnd().SendMessage(msg::wm::Close {});
                 Ok(())
             }
         });
@@ -26,7 +26,7 @@ impl ui::DlgDropDown {
             let self2 = self.clone();
             move || {
                 *self2.return_value.try_borrow_mut()? = None;
-                self2.window.hwnd().EndDialog(0)?;
+                self2.window.hwnd().SendMessage(msg::wm::Close {});
                 Ok(())
             }
         });
