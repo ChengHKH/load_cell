@@ -1,29 +1,15 @@
 #![windows_subsystem = "windows"]
 
-use winsafe::{prelude::*, co, AnyResult, HWND};
+#[cfg(not(target_arch = "wasm32"))]
 
-mod wnd_main;
-mod wnd_modal;
-mod dlg;
-mod reader;
-mod logger;
-
-use wnd_main::WndMain;
+mod app;
+use app::WindowsInterface;
 
 fn main() {
-    if let Err(e) = run_app() {
-        HWND::NULL.MessageBox(&e.to_string(), "Uncaught error", co::MB::ICONERROR).unwrap();
-    }
-}
-
-fn run_app() -> AnyResult<i32> {
-    WndMain::new()
-        .run()
-        .map_err(|err| err.into())
-}
-
-#[cfg(test)]
-#[test]
-fn test() {
-    main()
+    let native_options = eframe::NativeOptions::default();
+    eframe::run_native(
+        "Load Cell Reader",
+        native_options,
+        Box::new(|cc| Box::new(WindowsInterface::new(cc)))
+    );
 }
