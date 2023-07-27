@@ -1,18 +1,38 @@
+use core::fmt;
+
+#[derive(serde::Deserialize, serde::Serialize)]
+#[derive(Debug, PartialEq)]
+
+enum Units {
+    Gram,
+    Kilogram,
+    Newton,
+    Pound,
+}
+
+impl fmt::Display for Units {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Units::Gram => write!(f, "g"),
+            Units::Kilogram => write!(f, "kg"),
+            Units::Newton => write!(f, "N"),
+            Units::Pound => write!(f, "pb"),
+        }
+    }
+}
+
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)]
-
 pub struct  WindowsInterface {
-    label: String,
-
-    #[serde(skip)]
     value: f32,
+    unit: Units,
 }
 
 impl Default for WindowsInterface {
     fn default() -> Self {
         Self {
-            label: "Hello World!".to_owned(),
-            value: 2.7,
+            value: 0.0,
+            unit: Units::Gram,
         }
     }
 }
@@ -33,7 +53,7 @@ impl eframe::App for WindowsInterface {
     }
 
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        let Self { label, value } = self;
+        let Self {value , unit} = self;
         
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
             // The top panel is often a good place for a menu bar:
@@ -46,53 +66,49 @@ impl eframe::App for WindowsInterface {
             });
         });
 
-        egui::SidePanel::left("side_panel").show(ctx, |ui| {
-            ui.heading("Side Panel");
+        // egui::SidePanel::left("side_panel").show(ctx, |ui| {
+        //     ui.heading("Side Panel");
 
-            ui.horizontal(|ui| {
-                ui.label("Write something: ");
-                ui.text_edit_singleline(label);
-            });
+        //     ui.horizontal(|ui| {
+        //         ui.label("Write something: ");
+        //         ui.text_edit_singleline(label);
+        //     });
 
-            ui.add(egui::Slider::new(value, 0.0..=10.0).text("value"));
-            if ui.button("Increment").clicked() {
-                *value += 1.0;
-            }
+        //     ui.add(egui::Slider::new(value, 0.0..=10.0).text("value"));
+        //     if ui.button("Increment").clicked() {
+        //         *value += 1.0;
+        //     }
 
-            ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
-                ui.horizontal(|ui| {
-                    ui.spacing_mut().item_spacing.x = 0.0;
-                    ui.label("powered by ");
-                    ui.hyperlink_to("egui", "https://github.com/emilk/egui");
-                    ui.label(" and ");
-                    ui.hyperlink_to(
-                        "eframe",
-                        "https://github.com/emilk/egui/tree/master/crates/eframe",
-                    );
-                    ui.label(".");
-                });
-            });
-        });
+        //     ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
+        //         ui.horizontal(|ui| {
+        //             ui.spacing_mut().item_spacing.x = 0.0;
+        //             ui.label("powered by ");
+        //             ui.hyperlink_to("egui", "https://github.com/emilk/egui");
+        //             ui.label(" and ");
+        //             ui.hyperlink_to(
+        //                 "eframe",
+        //                 "https://github.com/emilk/egui/tree/master/crates/eframe",
+        //             );
+        //             ui.label(".");
+        //         });
+        //     });
+        // });
 
         egui::CentralPanel::default().show(ctx, |ui| {
-            // The central panel the region left after adding TopPanel's and SidePanel's
-
-            ui.heading("eframe template");
-            ui.hyperlink("https://github.com/emilk/eframe_template");
-            ui.add(egui::github_link_file!(
-                "https://github.com/emilk/eframe_template/blob/master/",
-                "Source code."
-            ));
+            ui.horizontal_centered(|ui| {
+                ui.label(format!("{}", value));
+                egui::ComboBox::from_id_source("unit-select")
+                    .selected_text(format!("{}", unit))
+                    .show_ui(ui, |ui| {
+                        ui.style_mut().wrap = Some(false);
+                        ui.set_min_width(30.0);
+                        ui.selectable_value(unit, Units::Gram, "g");
+                        ui.selectable_value(unit, Units::Kilogram, "kg");
+                        ui.selectable_value(unit, Units::Newton, "N");
+                        ui.selectable_value(unit, Units::Pound, "lb");
+                    });
+            });
             egui::warn_if_debug_build(ui);
         });
-
-        if false {
-            egui::Window::new("Window").show(ctx, |ui| {
-                ui.label("Windows can be moved by dragging them.");
-                ui.label("They are automatically sized based on contents.");
-                ui.label("You can turn on resizing and scrolling if you like.");
-                ui.label("You would normally choose either panels OR windows.");
-            });
-        }
     }
 }
