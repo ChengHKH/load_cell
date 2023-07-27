@@ -6,6 +6,7 @@ mod app;
 use app::WindowsInterface;
 
 fn main() {
+    env_logger::init();
     let native_options = eframe::NativeOptions::default();
     eframe::run_native(
         "Load Cell Reader",
